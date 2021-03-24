@@ -1,20 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { toggleIsEditing } from '../../redux/actions';
 
 const RouteEditor = (props) => {
-    console.log(props);
-    const {foundRoute, match} = props;
-    const currentURL = match.url;
-    const routeProps = (typeof foundRoute === 'undefined')
+    const {currentRoute, location, dispatchToggleIsEditing} = props;
+    const currentURL = location.pathname;
+    const routeProps = (typeof currentRoute === 'undefined')
         ? {
             description: '',
             exits: [],
             forms: [],
             route: currentURL
-        } : foundRoute;
+        } : currentRoute;
+    
+    const handleDescription = (e) => {console.log(e)};
+    
     const saveChanges = () => {};
     const addFormProp = () => {};
     const addExitProp = () => {};
-    const toggleEditing = () => {};
     const exitTypes = ['form', 'link', 'global'];
     return (
         <section style={{padding: '0 10px'}}>
@@ -23,7 +26,8 @@ const RouteEditor = (props) => {
                 <div>
                     <textarea id="description" name="description" style={{width: '400px', height: '200px'}} 
                         value={routeProps.description}
-                        placeholder='Description'></textarea>
+                        placeholder='Description'
+                        onChange={handleDescription}></textarea>
                 </div>
 
                 <h3>Forms</h3>
@@ -78,11 +82,23 @@ const RouteEditor = (props) => {
                     ))
                 }
 
-                <button type="button" onClick={toggleEditing}>Cancel</button>
+                <button type="button" onClick={dispatchToggleIsEditing}>Cancel</button>
                 <button type="submit">Save Changes</button>
             </form>
         </section>
     );
 };
 
-export default RouteEditor;
+const mapStateToProps = (state) => {
+    return {
+        currentRoute: state.currentRoute
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        dispatchToggleIsEditing: () => dispatch(toggleIsEditing()),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RouteEditor);

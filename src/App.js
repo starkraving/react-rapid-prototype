@@ -1,9 +1,10 @@
-import ProjectScoper from "./react-rapid-prototype/components/ProjectScoper";
+import React from 'react';
+import ReactRapidPrototype from './react-rapid-prototype/ReactRapidPrototype';
 import project from './project.json';
 
 function App() {
   return (
-    <ProjectScoper project={project}></ProjectScoper>
+    <ReactRapidPrototype project={project}></ReactRapidPrototype>
   );
 }
 
