@@ -67,12 +67,13 @@ class ConnectedRRP extends React.Component
     }
 
     render() {
-        const {isEditing, project, currentForm, location, dispatchToggleIsEditing, dispatchSetCurrentForm} = this.props;
+        const {isEditing, project, currentForm, history, location, dispatchToggleIsEditing, dispatchSetCurrentForm} = this.props;
         const {currentRoute} = this.state;
         const renderProps = {
             currentRoute, 
             currentForm, 
             project, 
+            history,
             location,
             dispatchToggleIsEditing,
             dispatchSetCurrentForm,
