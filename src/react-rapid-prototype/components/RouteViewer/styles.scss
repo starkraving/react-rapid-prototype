@@ -1,0 +1,20 @@
+#route_details {
+    max-width: 800px;
+    margin: 0 auto;
+
+    form {
+        .inputs {
+            margin-bottom: 0.5em;
+
+            label {
+                input:last-child {
+                    margin-left: 0.5em;
+                }
+            }
+
+            span > label {
+                margin-left: 1em;
+            }
+        }
+    }
+}

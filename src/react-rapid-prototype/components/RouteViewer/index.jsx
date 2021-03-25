@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './styles.scss';
 
 const RouteViewer = (props) => {
     const {
@@ -30,7 +31,7 @@ const RouteViewer = (props) => {
     }
 
     return (
-        <section>
+        <section id='route_details'>
             <h1>Current url: { currentURL }</h1>
             <p>
                 { routeFound ? currentRoute.description : 'Route not defined' }
@@ -53,18 +54,18 @@ const RouteViewer = (props) => {
                                     <div className='pageForm'>
                                         {
                                             form.inputs.map((input, i) => (
-                                                <div key={`input_${f}_${i}`} style={{marginBottom: '0.5em'}}>
+                                                <div className='inputs' key={`input_${f}_${i}`}>
                                                     {
                                                         ['text', 'email', 'password', 'number'].indexOf(input.type) > -1 && <label>
                                                             {input.label}: 
-                                                            <input type={input.type} defaultValue={input.value} style={{marginLeft: '0.5em'}}/>
+                                                            <input type={input.type} defaultValue={input.value}/>
                                                         </label>
                                                     }
                                                     {
                                                         ['radio', 'checkbox'].indexOf(input.type) > -1 && <span>
                                                             {input.label}: 
                                                             {
-                                                                input.value.split(',').map((value, k) => (<label key={`label_${f}_${i}_${k}`} style={{marginLeft: '1em'}}>
+                                                                input.value.split(',').map((value, k) => (<label key={`label_${f}_${i}_${k}`}>
                                                                     <input key={`input_${f}_${i}_${k}`} name={`input_${f}_${i}`} type={input.type} value={value}/>
                                                                     {value}
                                                                 </label>))
