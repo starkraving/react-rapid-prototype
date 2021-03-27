@@ -1,0 +1,76 @@
+section {
+    padding: 0 20px;
+}
+#description {
+    width: 620px;
+    height: 200px;
+  
+    & + aside {
+      display: block;
+      position: relative;
+      float: right;
+      width: 400px;
+      font-weight: normal;
+      font-size: 11px;
+      color: #333;
+      background-color: #fff;
+      padding: 5px;
+      font-family: Helvetica, Arial, sans-serif;
+  
+      &:before {
+        content: '';
+        display: block;
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        background-color: #333;
+        position: absolute;
+        top: 0;
+        left: -42px;
+      }
+  
+      &:after {
+        content: '?';
+        font-weight: bold;
+        color: #ffcc00;
+        font-size: 25px;
+        position: absolute;
+        display: block;
+        width: 32px;
+        text-align: center;
+        line-height: 1em;
+        top: 3px;
+        left: -42px;
+      }
+    }
+  }
+
+  div.route-props {
+      margin-bottom: 20px;
+  }
+  
+  label.route-prop, label.input-prop {
+    display: inline-block;
+    width: 210px;
+    text-align: left;
+    padding-right: 10px;
+  
+    input:not([type=checkbox]), select {
+      margin-top: 5px;
+      width: 200px;
+    }
+  }
+  
+  label.form-prop {
+    width: 620px;
+    text-align: right;
+  
+    input {
+      width: 450px;
+      margin-left: 10px;
+    }
+  }
+  
+  button + button {
+      margin-left: 10px;
+  }
