@@ -1,4 +1,5 @@
 export const SET_PROJECT = 'SET_PROJECT';
+export const RESET_PROJECT = 'RESET_PROJECT';
 export const SET_LINK_LOCATIONS = 'SET_LINK_LOCATIONS';
 export const SET_CURRENT_ROUTE = 'SET_CURRENT_ROUTE';
 export const SET_CURRENT_FORM = 'SET_CURRENT_FORM';
@@ -9,6 +10,10 @@ export const SAVE_ROUTE = 'SAVE_ROUTE';
 export const setProject = (project) => ({
     type: SET_PROJECT,
     payload: project
+});
+
+export const resetProject = () => ({
+    type: RESET_PROJECT
 });
 
 export const setLinkLocations = (locations) => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../redux/actions';
+import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../redux/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
 
@@ -46,6 +46,7 @@ class ConnectedRRP extends React.Component
         const {isUpdated, location, currentRoute, dispatchToggleIsUpdated} = this.props;
         if (prevProps.isUpdated !== isUpdated && isUpdated) {
             this.setState({currentRoute}, () => {
+                console.log('UPDATED:', currentRoute);
                 dispatchToggleIsUpdated(false);
             });
             return;
@@ -67,23 +68,40 @@ class ConnectedRRP extends React.Component
             ? undefined 
             : project.routes.filter((routeProp) => routeProp.route === location.pathname).pop();
 
-        if (currentRoute) {
-            this.setState({currentRoute});
-            dispatchSetCurrentRoute(currentRoute);
-        }
+        this.setState({currentRoute});
+        dispatchSetCurrentRoute(currentRoute);
     }
 
     render() {
-        const {isEditing, project, currentForm, history, location, dispatchToggleIsEditing, dispatchSetCurrentForm} = this.props;
+        const {
+            isEditing,
+            project,
+            currentForm,
+            history,
+            location,
+            dispatchToggleIsEditing,
+            dispatchSetCurrentForm,
+            dispatchResetProject
+        } = this.props;
         const {currentRoute} = this.state;
+        const handleExport = () => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(
+              new Blob([JSON.stringify(project)], {type: 'application/json'})
+            );
+            a.download = 'project.json';
+            a.click();
+          }
         const renderProps = {
             currentRoute, 
             currentForm, 
             project, 
             history,
             location,
+            handleExport,
             dispatchToggleIsEditing,
             dispatchSetCurrentForm,
+            dispatchResetProject,
             globalExits: project.globalExits || []
         };
 
@@ -112,10 +130,11 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         dispatchSetProject: (project) => dispatch(setProject(project)),
+        dispatchResetProject: () => dispatch(resetProject()),
         dispatchSetLinkLocations: (locations) => dispatch(setLinkLocations(locations)),
         dispatchSetCurrentRoute: (route) => dispatch(setCurrentRoute(route)),
         dispatchSetCurrentForm: (form) => dispatch(setCurrentForm(form)),
-        dispatchToggleIsEditing: () => dispatch(toggleIsEditing()),
+        dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
     }
 };

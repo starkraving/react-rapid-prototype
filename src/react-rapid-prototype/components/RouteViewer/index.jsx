@@ -8,8 +8,10 @@ const RouteViewer = (props) => {
         currentForm: currentFormIndex, 
         history,
         location,
+        handleExport,
         dispatchToggleIsEditing,
         dispatchSetCurrentForm,
+        dispatchResetProject,
         globalExits,
     } = props;
 
@@ -17,10 +19,20 @@ const RouteViewer = (props) => {
     const routeFound = typeof currentRoute !== 'undefined';
     const currentForm = (typeof currentFormIndex !== 'undefined' && currentRoute && currentRoute.forms[currentFormIndex])
         ? currentRoute.forms[currentFormIndex] : undefined;
+    const currentFormExit =
+        typeof currentForm !== 'undefined'
+        && typeof currentForm.action !== 'undefined'
+        && typeof currentForm.action.exit !== 'undefined'
+        && typeof currentForm.action.exit.route === 'string'
+        && currentForm.action.exit.route.length > 0;
 
     const handleFormButton = (form) => (e) => {
         dispatchSetCurrentForm(form);
         e.preventDefault();
+    };
+
+    const startEditing = () => {
+        dispatchToggleIsEditing(true);
     };
 
     const clearFormSelection = () => {
@@ -30,6 +42,11 @@ const RouteViewer = (props) => {
     const clearFormAndNavigate = () => {
         dispatchSetCurrentForm(undefined);
         history.push(currentForm.action.exit.route);
+    };
+
+    const resetProject = () => {
+        dispatchResetProject();
+        history.push('/');
     }
 
     return (
@@ -42,9 +59,9 @@ const RouteViewer = (props) => {
             {
                 !currentForm && <div>
                     <div id='controls'>
-                        <button type='button' onClick={dispatchToggleIsEditing}>Edit Properties</button>
-                        <button type='button' >Export Project JSON</button>
-                        <button type='button' >Reset</button>
+                        <button type='button' onClick={startEditing}>Edit Properties</button>
+                        <button type='button' onClick={handleExport}>Export Project JSON</button>
+                        <button type='button' onClick={resetProject}>Reset</button>
                     </div>
                     {
                         routeFound && <div>
@@ -119,16 +136,16 @@ const RouteViewer = (props) => {
                 <p>{ currentForm.action.description }</p>
                 <div>
                     {
-                        currentForm.action.exit && <button onClick={clearFormAndNavigate}>
+                        currentFormExit && <button onClick={clearFormAndNavigate}>
                             Navigate to {currentForm.action.exit.route} 
                         </button>
                     }
                     {
-                        !currentForm.action.exit && <button onClick={clearFormSelection}>Finished</button>
+                        !currentFormExit && <button onClick={clearFormSelection}>Finished</button>
                     }
 
                     <div id="controls">
-                        <button onClick={dispatchToggleIsEditing}>Edit Form</button>
+                        <button onClick={startEditing}>Edit Form</button>
                     </div>
                 </div>
               </div>

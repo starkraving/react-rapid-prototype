@@ -116,6 +116,13 @@ class RouteEditor extends React.Component
                 break;
 
             case 'exit' :
+                if (typeof formProps.action.exit.route === 'undefined') {
+                    formProps.action.exit = {
+                        route: null,
+                        visibleText: '',
+                        routeLocations: ['general']
+                    };
+                }
                 formProps.action.exit.route = value;
                 break;
             
@@ -185,7 +192,7 @@ class RouteEditor extends React.Component
         const {routeProps} = this.state;
         // TODO: handle global exits
         dispatchSaveRoute(routeProps);
-        dispatchToggleIsEditing();
+        dispatchToggleIsEditing(false);
         e.preventDefault();
     };
     
@@ -194,7 +201,7 @@ class RouteEditor extends React.Component
         const {formProps} = this.state;
         currentRoute.forms[currentForm] = formProps;
         dispatchSaveRoute(currentRoute);
-        dispatchToggleIsEditing();
+        dispatchToggleIsEditing(false);
         e.preventDefault();
     };
 
@@ -359,13 +366,15 @@ class RouteEditor extends React.Component
                         <div>
                             <label className='form-prop'>
                                 Button Text:
-                                <input type='text' name='button' defaultValue={currentForm.action.button.label}/>
+                                <input type='text' name='button' defaultValue={currentForm.action.button.label}
+                                    onChange={this.handleFormAction}/>
                             </label>
                         </div>
                         <div>
                             <label className='form-prop'>
                                 Redirect to:
-                                <input type='text' name='exit' defaultValue={currentForm.action.exit.route}/>
+                                <input type='text' name='exit' defaultValue={currentForm.action.exit.route}
+                                    onChange={this.handleFormAction}/>
                             </label>
                         </div>
                         <h3>Form Inputs</h3>
@@ -420,7 +429,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        dispatchToggleIsEditing: () => dispatch(toggleIsEditing()),
+        dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchSaveRoute: (routeProps, globalExits = []) => dispatch(saveRoute(routeProps, globalExits)),
     }
 }

@@ -1,8 +1,17 @@
 import { defaultLocations, defaultProject } from "../components/defaults";
-import { SAVE_ROUTE, SET_CURRENT_FORM, SET_CURRENT_ROUTE, SET_LINK_LOCATIONS, SET_PROJECT, TOGGLE_IS_EDITING, TOGGLE_IS_UPDATED } from "./actions";
+import {
+    RESET_PROJECT,
+    SAVE_ROUTE,
+    SET_CURRENT_FORM,
+    SET_CURRENT_ROUTE,
+    SET_LINK_LOCATIONS,
+    SET_PROJECT,
+    TOGGLE_IS_EDITING,
+    TOGGLE_IS_UPDATED
+} from "./actions";
 
 const initialState = {
-    project: defaultProject,
+    project: JSON.parse(JSON.stringify(defaultProject)),
     linkLocations: defaultLocations,
     currentRoute: undefined,
     currentForm: undefined,
@@ -16,6 +25,14 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 project: action.payload
+            };
+        case RESET_PROJECT :
+            const project = JSON.parse(JSON.stringify(defaultProject));
+            return {
+                ...initialState,
+                project,
+                currentRoute: project.routes[0],
+                isUpdated: true
             };
         case SET_LINK_LOCATIONS :
             return {
@@ -35,7 +52,7 @@ const appReducer = (state = initialState, action) => {
         case TOGGLE_IS_EDITING :
             return {
                 ...state,
-                isEditing: !state.isEditing
+                isEditing: action.payload
             };
         case TOGGLE_IS_UPDATED :
             return {

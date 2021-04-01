@@ -1,3 +1,5 @@
+export const defaultLocations = ['general'];
+
 export const defaultProject = {
     "routes":[
         {
@@ -11,9 +13,7 @@ export const defaultProject = {
         {
             "route":"/",
             "visibleText":"Home",
-            "routeLocations":[""]
+            "routeLocations": defaultLocations
         }
     ]
 };
-
-export const defaultLocations = ['general'];
