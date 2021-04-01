@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing } from '../redux/actions';
+import { setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../redux/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
 
@@ -26,7 +26,7 @@ class ConnectedRRP extends React.Component
             dispatchSetLinkLocations,
             dispatchSetProject,
             isUserDefinedProject,
-            isUserDefinedLocations
+            isUserDefinedLocations,
         } = this.props;
 
         if (renderProject) {
@@ -43,7 +43,14 @@ class ConnectedRRP extends React.Component
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.location.pathname === this.props.location.pathname) {
+        const {isUpdated, location, currentRoute, dispatchToggleIsUpdated} = this.props;
+        if (prevProps.isUpdated !== isUpdated && isUpdated) {
+            this.setState({currentRoute}, () => {
+                dispatchToggleIsUpdated(false);
+            });
+            return;
+        }
+        if (prevProps.location.pathname === location.pathname) {
             return;
         }
         this.handleCurrentRoute();
@@ -87,7 +94,7 @@ class ConnectedRRP extends React.Component
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const {project, isEditing, linkLocations, currentForm} = state;
+    const {project, isEditing, isUpdated, linkLocations, currentRoute, currentForm} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null} = ownProps;
     return {
         project: userDefinedProject || project,
@@ -95,7 +102,9 @@ const mapStateToProps = (state, ownProps) => {
         linkLocations: userDefinedLocations || linkLocations,
         isUserDefinedLocations: userDefinedLocations !== null,
         isEditing,
+        isUpdated,
         renderProject,
+        currentRoute,
         currentForm,
     };
 };
@@ -107,6 +116,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatchSetCurrentRoute: (route) => dispatch(setCurrentRoute(route)),
         dispatchSetCurrentForm: (form) => dispatch(setCurrentForm(form)),
         dispatchToggleIsEditing: () => dispatch(toggleIsEditing()),
+        dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
     }
 };
 

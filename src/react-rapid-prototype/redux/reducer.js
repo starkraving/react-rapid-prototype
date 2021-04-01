@@ -1,12 +1,13 @@
 import { defaultLocations, defaultProject } from "../components/defaults";
-import { SET_CURRENT_FORM, SET_CURRENT_ROUTE, SET_LINK_LOCATIONS, SET_PROJECT, TOGGLE_IS_EDITING } from "./actions";
+import { SAVE_ROUTE, SET_CURRENT_FORM, SET_CURRENT_ROUTE, SET_LINK_LOCATIONS, SET_PROJECT, TOGGLE_IS_EDITING, TOGGLE_IS_UPDATED } from "./actions";
 
 const initialState = {
     project: defaultProject,
     linkLocations: defaultLocations,
     currentRoute: undefined,
     currentForm: undefined,
-    isEditing: false
+    isEditing: false,
+    isUpdated: false,
 };
 
 const appReducer = (state = initialState, action) => {
@@ -36,9 +37,41 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 isEditing: !state.isEditing
             };
+        case TOGGLE_IS_UPDATED :
+            return {
+                ...state,
+                isUpdated: action.payload
+            }
+        case SAVE_ROUTE :
+            const {routeProps, globalExits} = action.payload;
+            return {
+                ...state,
+                project: upsertRoute(state, routeProps, globalExits),
+                currentRoute: routeProps,
+                isUpdated: true,
+            }
         default:
             return state;
     }
 };
+
+function upsertRoute(state, routeProps, globalExits) {
+    let {project} = state;
+    let pos = project.routes.reduce((found, searchedRouteProps, index) => {
+        if (typeof found === 'number') {
+            return found;
+        }
+        return (searchedRouteProps.route === routeProps.route)
+            ? index : null;
+    }, null);
+    if (pos === null) {
+        pos = project.routes.length;
+    }
+    project.routes.splice(pos, 1, routeProps);
+    if (globalExits.length > 0) {
+        project.globalExits.push(...globalExits);
+    }
+    return project;
+}
 
 export default appReducer;

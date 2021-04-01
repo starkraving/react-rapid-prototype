@@ -5,7 +5,7 @@ import './styles.scss';
 const RouteViewer = (props) => {
     const {
         currentRoute,
-        currentForm, 
+        currentForm: currentFormIndex, 
         history,
         location,
         dispatchToggleIsEditing,
@@ -15,6 +15,8 @@ const RouteViewer = (props) => {
 
     const currentURL = location.pathname;
     const routeFound = typeof currentRoute !== 'undefined';
+    const currentForm = (typeof currentFormIndex !== 'undefined' && currentRoute && currentRoute.forms[currentFormIndex])
+        ? currentRoute.forms[currentFormIndex] : undefined;
 
     const handleFormButton = (form) => (e) => {
         dispatchSetCurrentForm(form);
@@ -50,7 +52,7 @@ const RouteViewer = (props) => {
                                 currentRoute.forms.length > 0 && <h3>Forms</h3>
                             }
                             {
-                                currentRoute.forms.map((form, f) => (<form key={`form_${f}`} onSubmit={handleFormButton(form)}>
+                                currentRoute.forms.map((form, f) => (<form key={`form_${f}`} onSubmit={handleFormButton(f)}>
                                     <div className='pageForm'>
                                         {
                                             form.inputs.map((input, i) => (
