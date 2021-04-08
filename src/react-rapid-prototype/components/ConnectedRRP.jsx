@@ -46,7 +46,6 @@ class ConnectedRRP extends React.Component
         const {isUpdated, location, currentRoute, dispatchToggleIsUpdated} = this.props;
         if (prevProps.isUpdated !== isUpdated && isUpdated) {
             this.setState({currentRoute}, () => {
-                console.log('UPDATED:', currentRoute);
                 dispatchToggleIsUpdated(false);
             });
             return;

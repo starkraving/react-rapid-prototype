@@ -21,9 +21,34 @@ class RouteEditor extends React.Component
         this.handleRouteForm = this.handleRouteForm.bind(this);
         this.handleRouteExit = this.handleRouteExit.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.saveRouteChanges = this.saveRouteChanges.bind(this);
         this.saveFormChanges = this.saveFormChanges.bind(this);
     }
+
+    static emptyForm = {
+        action: {
+            name: '',
+            description: '',
+            button: {
+                type: 'submit',
+                label: '',
+                attributes: ''
+            },
+            exit: {
+                route: null,
+                visibleText: '',
+                routeLocations: ['general']
+            }
+        },
+        inputs: []
+    };
+
+    static emptyExit = {
+        route: '',
+        visibleText: '',
+        routeLocations: ['general']
+    };
 
     componentDidMount() {
         const {currentRoute, currentForm: currentFormIndex, location} = this.props;
@@ -61,32 +86,24 @@ class RouteEditor extends React.Component
         const {routeProps} = this.state;
         const routeForms = [...Array(routeProps.forms.length + 1).keys()]
             .map((index) => (routeProps.forms.length > index)
-                ? routeProps.forms[index]
+                ? {
+                    ...routeProps.forms[index],
+                    type: 'form',
+                }
                 : {
-                    action: {
-                        name: '',
-                        description: '',
-                        button: {
-                            type: 'submit',
-                            label: '',
-                            attributes: ''
-                        },
-                        exit: {
-                            route: null,
-                            visibleText: '',
-                            routeLocations: ['general']
-                        }
-                    },
-                    inputs: []
+                    ...RouteEditor.emptyForm,
+                    type: 'form',
                 });
         
         const routeExits = [...Array(routeProps.exits.length + 1).keys()]
             .map((index) => (routeProps.exits.length > index)
-                ? routeProps.exits[index]
+                ? {
+                    ...routeProps.exits[index],
+                    type: 'link',
+                }
                 : {
-                    route: '',
-                    visibleText: '',
-                    routeLocations: ['general']
+                    ...RouteEditor.emptyExit,
+                    type: 'link',
                 });
 
         this.setState({routeForms, routeExits});
@@ -136,7 +153,7 @@ class RouteEditor extends React.Component
     handleRouteForm(index) {
         return (e) => {
             const {routeProps, routeForms} = this.state;
-            const form = routeForms[index];
+            const form = JSON.parse(JSON.stringify(routeForms[index]));
             const fieldName = e.target.name;
             const value = e.target.value;
             
@@ -147,8 +164,10 @@ class RouteEditor extends React.Component
                 case 'action' :
                     form.action.name = value;
                     break;
+                case 'exitType' :
+                    form.type = value;
+                    break;
                 default :
-                    // TODO: handle exitType change
                     break;
             }
             routeProps.forms[index] = form;
@@ -159,12 +178,12 @@ class RouteEditor extends React.Component
     handleRouteExit(index) {
         return (e) => {
             const {routeProps, routeExits} = this.state;
-            const exit = routeExits[index];
-            const fieldName = e.target.name;
+            const exit = JSON.parse(JSON.stringify(routeExits[index]));
             const value = e.target.value;
+            let fieldName = e.target.name;
             
             if (fieldName === 'exitType') {
-                // TODO handle exitType change
+                fieldName = 'type';
             }
             exit[fieldName] = value;
             routeProps.exits[index] = exit;
@@ -186,12 +205,21 @@ class RouteEditor extends React.Component
             this.setState({formProps}, this.setMinimumFields);
         };
     };
+
+    handleCancel(e) {
+        this.setMinimumFields();
+        this.props.dispatchToggleIsEditing(false);
+        e.preventDefault();
+    }
     
     saveRouteChanges(e) {
         const {dispatchSaveRoute, dispatchToggleIsEditing} = this.props;
         const {routeProps} = this.state;
-        // TODO: handle global exits
-        dispatchSaveRoute(routeProps);
+        const {forms, exits, globals} = RouteEditor.remapExitTypes(routeProps);
+        routeProps.forms = forms;
+        routeProps.exits = exits;
+
+        dispatchSaveRoute(routeProps, globals);
         dispatchToggleIsEditing(false);
         e.preventDefault();
     };
@@ -207,7 +235,7 @@ class RouteEditor extends React.Component
 
     render() {
         const {routeProps, routeForms, routeExits, formInputs} = this.state;
-        const {location, linkLocations, dispatchToggleIsEditing, currentRoute, currentForm: currentFormIndex} = this.props;
+        const {location, linkLocations, currentRoute, currentForm: currentFormIndex} = this.props;
         const currentForm = !isNaN(currentFormIndex) && currentRoute.forms[currentFormIndex]
             ? currentRoute.forms[currentFormIndex] : undefined;
         const currentURL = location.pathname;
@@ -243,10 +271,10 @@ class RouteEditor extends React.Component
                                 <div className='route-props' key={`form_${fIdx}`}>
                                     <label className='route-prop'>
                                         Exit Type:
-                                        <select name='exitType' defaultValue='form' onChange={this.handleRouteForm(fIdx)}>
+                                        <select name='exitType' defaultValue={form.type} onChange={this.handleRouteForm(fIdx)}>
                                             {
                                                 exitTypes.map((type, i) => (
-                                                    <option key={`exittype_${fIdx}_${i}`} value={type}>{ type }</option>
+                                                    <option key={`exittype_form_${fIdx}_${i}`} value={type}>{ type }</option>
                                                 ))
                                             }
                                         </select>
@@ -286,10 +314,10 @@ class RouteEditor extends React.Component
                             <div className='route-props' key={`exit_${idx}`}>
                                 <label className='route-prop'>
                                     Exit Type:
-                                    <select name='exitType' defaultValue='link' onChange={this.handleRouteExit(idx)}>
+                                    <select name='exitType' defaultValue={exit.type} onChange={this.handleRouteExit(idx)}>
                                         {
                                             exitTypes.map((type, i) => (
-                                                <option key={`exittype_${idx}_${i}`} value={type}>{ type }</option>
+                                                <option key={`exittype_exit_${idx}_${i}`} value={type}>{ type }</option>
                                             ))
                                         }
                                     </select>
@@ -323,7 +351,7 @@ class RouteEditor extends React.Component
                             </div>
                             ))
                         }
-                        <button type='button' onClick={dispatchToggleIsEditing}>Cancel</button>
+                        <button type='button' onClick={this.handleCancel}>Cancel</button>
                         <button type='submit'>Save Changes</button>
                     </form>
                 }
@@ -410,12 +438,61 @@ class RouteEditor extends React.Component
                             </div>))
                         }
 
-                        <button type='button' onClick={dispatchToggleIsEditing}>Cancel</button>
+                        <button type='button' onClick={this.handleCancel}>Cancel</button>
                         <button type='submit'>Save Changes</button>
                     </form>
                 }
             </section>
         );
+    }
+
+    static remapExitTypes(routeProps) {
+        const {formForms, formLinks, formGlobals} = routeProps.forms.reduce(RouteEditor.remapRouteForms, {formForms: [], formLinks: [], formGlobals: []});
+        const {linkForms, linkLinks, linkGlobals} = routeProps.exits.reduce(RouteEditor.remapRouteExits, {linkForms: [], linkLinks: [], linkGlobals: []});
+        return {
+            forms: [...formForms, ...linkForms],
+            exits: [...formLinks, ...linkLinks],
+            globals: [...formGlobals, ...linkGlobals]
+        };
+    }
+
+    static remapRouteForms(collector, form) {
+        form.type = form.type || 'form';
+        if (form.type === 'form') {
+            delete form.type;
+            collector.formForms.push(form);
+            return collector;
+        }
+        const exit = {
+            ...form.action.exit,
+            visibleText: form.action.button.label
+        };
+        if (exit.route === null) {
+            exit.route = '/';
+        }
+        const collection = (form.type === 'global') ? 'formGlobals' : 'formLinks';
+        collector[collection].push(exit);
+        return collector;
+    }
+
+    static remapRouteExits(collector, exit) {
+        exit.type = exit.type || 'exit';
+        if (exit.type === 'form') {
+            delete exit.type;
+            const form = {
+                ...RouteEditor.emptyForm
+            };
+            form.action.button.label = exit.visibleText;
+            form.action.exit = {
+                ...exit
+            };
+            collector.linkForms.push(form);
+            return collector;
+        }
+        const collection = (exit.type === 'global') ? 'linkGlobals' : 'linkLinks';
+        delete exit.type;
+        collector[collection].push(exit);
+        return collector;
     }
 }
 
