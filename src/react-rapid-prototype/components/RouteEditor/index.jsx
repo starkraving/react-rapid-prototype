@@ -87,7 +87,7 @@ class RouteEditor extends React.Component
         const routeForms = [...Array(routeProps.forms.length + 1).keys()]
             .map((index) => (routeProps.forms.length > index)
                 ? {
-                    ...routeProps.forms[index],
+                    ...RouteEditor.fixFormLocations(routeProps.forms[index]),
                     type: 'form',
                 }
                 : {
@@ -98,7 +98,7 @@ class RouteEditor extends React.Component
         const routeExits = [...Array(routeProps.exits.length + 1).keys()]
             .map((index) => (routeProps.exits.length > index)
                 ? {
-                    ...routeProps.exits[index],
+                    ...RouteEditor.fixExitLocations(routeProps.exits[index]),
                     type: 'link',
                 }
                 : {
@@ -167,6 +167,16 @@ class RouteEditor extends React.Component
                 case 'exitType' :
                     form.type = value;
                     break;
+                case 'prototype' :
+                    if (e.target.checked) {
+                        form.action.exit.routeLocations.push(value);
+                    } else {
+                        const pos = form.action.exit.routeLocations.indexOf(value);
+                        if (pos > -1) {
+                            form.action.exit.routeLocations.splice(pos, 1);
+                        }
+                    }
+                    break;
                 default :
                     break;
             }
@@ -182,10 +192,24 @@ class RouteEditor extends React.Component
             const value = e.target.value;
             let fieldName = e.target.name;
             
-            if (fieldName === 'exitType') {
-                fieldName = 'type';
+            switch (fieldName) {
+                case 'exitType' :
+                    exit.type = value;
+                    break;
+                case 'prototype' :
+                    if (e.target.checked) {
+                        exit.routeLocations.push(value);
+                    } else {
+                        const pos = exit.routeLocations.indexOf(value);
+                        if (pos > -1) {
+                            exit.routeLocations.splice(pos, 1);
+                        }
+                    }
+                    break;
+                default :
+                    exit[fieldName] = value;
+                    break;
             }
-            exit[fieldName] = value;
             routeProps.exits[index] = exit;
             this.setState({routeProps}, this.setMinimumFields);
         };
@@ -298,7 +322,12 @@ class RouteEditor extends React.Component
                                             return (
                                                 <span style={{marginRight: '1em'}} key={`formlocation_${fIdx}_${lIdx}`}>
                                                     <label className='prototype'>
-                                                        <input type='checkbox' defaultValue={loc}/>
+                                                        <input type='checkbox' name='prototype'
+                                                            value={loc} 
+                                                            checked={form.action.exit.routeLocations.indexOf(loc) > -1}
+                                                            onChange={this.handleRouteForm(fIdx)}
+                                                            disabled={fIdx === routeProps.forms.length}
+                                                            required={form.action.exit.routeLocations.length === 0}/>
                                                         {loc}
                                                     </label>
                                                 </span>
@@ -341,7 +370,11 @@ class RouteEditor extends React.Component
                                         return (
                                             <span key={`loc_${idx}_${lIdx}`} style={{marginRight: '1em'}}>
                                                 <label className='prototype'>
-                                                    <input type='checkbox' defaultValue={loc}/>
+                                                    <input type='checkbox' name='prototype'
+                                                        value={loc}
+                                                        checked={exit.routeLocations.indexOf(loc) > -1}
+                                                        onChange={this.handleRouteExit(idx)}
+                                                        disabled={idx === routeProps.exits.length}/>
                                                     {loc}
                                                 </label>
                                             </span>
@@ -493,6 +526,26 @@ class RouteEditor extends React.Component
         delete exit.type;
         collector[collection].push(exit);
         return collector;
+    }
+
+    static fixFormLocations(form) {
+        if (typeof form.action.exit === 'undefined') {
+            form.action.exit = {
+                ...RouteEditor.emptyExit,
+                route: null
+            };
+        }
+        if (JSON.stringify(form.action.exit.routeLocations) === '[""]') {
+            form.action.exit.routeLocations = ['general'];
+        }
+        return form;
+    }
+
+    static fixExitLocations(exit) {
+        if (JSON.stringify(exit.routeLocations) === '[""]') {
+            exit.routeLocations = ['general'];
+        }
+        return exit;
     }
 }
 
