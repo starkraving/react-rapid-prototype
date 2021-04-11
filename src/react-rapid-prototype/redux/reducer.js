@@ -14,7 +14,7 @@ const initialState = {
     project: JSON.parse(JSON.stringify(defaultProject)),
     linkLocations: defaultLocations,
     currentRoute: undefined,
-    currentForm: undefined,
+    currentFormIndex: undefined,
     isEditing: false,
     isUpdated: false,
 };
@@ -24,7 +24,7 @@ const appReducer = (state = initialState, action) => {
         case SET_PROJECT :
             return {
                 ...state,
-                project: action.payload
+                project: action.payload,
             };
         case RESET_PROJECT :
             const project = JSON.parse(JSON.stringify(defaultProject));
@@ -32,32 +32,32 @@ const appReducer = (state = initialState, action) => {
                 ...initialState,
                 project,
                 currentRoute: project.routes[0],
-                isUpdated: true
+                isUpdated: true,
             };
         case SET_LINK_LOCATIONS :
             return {
                 ...state,
-                linkLocations: action.payload
+                linkLocations: action.payload,
             };
         case SET_CURRENT_ROUTE :
             return {
                 ...state,
-                currentRoute: action.payload
+                currentRoute: action.payload,
             };
         case SET_CURRENT_FORM :
             return {
                 ...state,
-                currentForm: action.payload
+                currentFormIndex: action.payload,
             };
         case TOGGLE_IS_EDITING :
             return {
                 ...state,
-                isEditing: action.payload
+                isEditing: action.payload,
             };
         case TOGGLE_IS_UPDATED :
             return {
                 ...state,
-                isUpdated: action.payload
+                isUpdated: action.payload,
             }
         case SAVE_ROUTE :
             const {routeProps, globalExits} = action.payload;

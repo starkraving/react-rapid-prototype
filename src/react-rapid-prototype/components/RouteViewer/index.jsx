@@ -5,7 +5,7 @@ import './styles.scss';
 const RouteViewer = (props) => {
     const {
         currentRoute,
-        currentForm: currentFormIndex, 
+        currentFormIndex, 
         history,
         location,
         handleExport,
@@ -26,8 +26,8 @@ const RouteViewer = (props) => {
         && typeof currentForm.action.exit.route === 'string'
         && currentForm.action.exit.route.length > 0;
 
-    const handleFormButton = (form) => (e) => {
-        dispatchSetCurrentForm(form);
+    const handleFormButton = (formIndex) => (e) => {
+        dispatchSetCurrentForm(formIndex);
         e.preventDefault();
     };
 

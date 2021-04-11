@@ -51,20 +51,23 @@ class RouteEditor extends React.Component
     };
 
     componentDidMount() {
-        const {currentRoute, currentForm: currentFormIndex, location} = this.props;
+        const {currentRoute, currentFormIndex, location} = this.props;
         const currentURL = location.pathname;
-        this.setState({
-            formProps: (typeof currentFormIndex === 'undefined')
+        const formProps = (typeof currentFormIndex === 'undefined')
                 ? undefined
-                : JSON.parse(JSON.stringify(currentRoute.forms[currentFormIndex])),
-            routeProps: (typeof currentRoute === 'undefined')
+                : JSON.parse(JSON.stringify(currentRoute.forms[currentFormIndex]));
+        const routeProps = (typeof currentRoute === 'undefined')
                 ? {
                     description: '',
                     exits: [],
                     forms: [],
                     route: currentURL
-                } : JSON.parse(JSON.stringify(currentRoute))
-        }, this.setMinimumFields)
+                } : JSON.parse(JSON.stringify(currentRoute));
+        
+        this.setState({
+            formProps,
+            routeProps,
+        }, this.setMinimumFields);
     }
 
     setMinimumFields() {
@@ -87,23 +90,23 @@ class RouteEditor extends React.Component
         const routeForms = [...Array(routeProps.forms.length + 1).keys()]
             .map((index) => (routeProps.forms.length > index)
                 ? {
-                    ...RouteEditor.fixFormLocations(routeProps.forms[index]),
                     type: 'form',
+                    ...RouteEditor.fixFormLocations(routeProps.forms[index]),
                 }
                 : {
-                    ...RouteEditor.emptyForm,
                     type: 'form',
+                    ...RouteEditor.emptyForm,
                 });
         
         const routeExits = [...Array(routeProps.exits.length + 1).keys()]
             .map((index) => (routeProps.exits.length > index)
                 ? {
-                    ...RouteEditor.fixExitLocations(routeProps.exits[index]),
                     type: 'link',
+                    ...RouteEditor.fixExitLocations(routeProps.exits[index]),
                 }
                 : {
-                    ...RouteEditor.emptyExit,
                     type: 'link',
+                    ...RouteEditor.emptyExit,
                 });
 
         this.setState({routeForms, routeExits});
@@ -190,7 +193,7 @@ class RouteEditor extends React.Component
             const {routeProps, routeExits} = this.state;
             const exit = JSON.parse(JSON.stringify(routeExits[index]));
             const value = e.target.value;
-            let fieldName = e.target.name;
+            const fieldName = e.target.name;
             
             switch (fieldName) {
                 case 'exitType' :
@@ -249,29 +252,27 @@ class RouteEditor extends React.Component
     };
     
     saveFormChanges(e) {
-        const {currentRoute, currentForm, dispatchSaveRoute, dispatchToggleIsEditing} = this.props;
+        const {currentRoute, currentFormIndex, dispatchSaveRoute, dispatchToggleIsEditing} = this.props;
         const {formProps} = this.state;
-        currentRoute.forms[currentForm] = formProps;
+        currentRoute.forms[currentFormIndex] = formProps;
         dispatchSaveRoute(currentRoute);
         dispatchToggleIsEditing(false);
         e.preventDefault();
     };
 
     render() {
-        const {routeProps, routeForms, routeExits, formInputs} = this.state;
-        const {location, linkLocations, currentRoute, currentForm: currentFormIndex} = this.props;
-        const currentForm = !isNaN(currentFormIndex) && currentRoute.forms[currentFormIndex]
-            ? currentRoute.forms[currentFormIndex] : undefined;
+        const {routeProps, routeForms, routeExits, formProps, formInputs} = this.state;
+        const {location, linkLocations, currentFormIndex} = this.props;
         const currentURL = location.pathname;
         const exitTypes = ['form', 'link', 'global'];
         const inputTypes = ['text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file'];
         return (
             <section>
                 {
-                    typeof currentForm === 'undefined' && <form onSubmit={this.saveRouteChanges}>
+                    typeof currentFormIndex === 'undefined' && <form onSubmit={this.saveRouteChanges}>
                         <h1>Current URL: {currentURL}</h1>
                         <div>
-                            <textarea id='description' defaultValue={routeProps.description} onChange={this.handleDescription}></textarea>
+                            <textarea id='description' value={routeProps.description} onChange={this.handleDescription}></textarea>
                             <aside>
                                 <p>
                                     Use the textarea to give this route some descriptive text which will be readable when the user navigates
@@ -295,7 +296,7 @@ class RouteEditor extends React.Component
                                 <div className='route-props' key={`form_${fIdx}`}>
                                     <label className='route-prop'>
                                         Exit Type:
-                                        <select name='exitType' defaultValue={form.type} onChange={this.handleRouteForm(fIdx)}>
+                                        <select name='exitType' value={form.type} onChange={this.handleRouteForm(fIdx)}>
                                             {
                                                 exitTypes.map((type, i) => (
                                                     <option key={`exittype_form_${fIdx}_${i}`} value={type}>{ type }</option>
@@ -305,13 +306,13 @@ class RouteEditor extends React.Component
                                     </label>
                                     <label className='route-prop'>
                                         Button Text:
-                                        <input type='text' name='visibleText' defaultValue={form.action.button.label}
+                                        <input type='text' name='visibleText' value={form.action.button.label}
                                             onChange={this.handleRouteForm(fIdx)}
                                             required={form.action.name.length > 0}/>
                                     </label>
                                     <label className='route-prop'>
                                         Action:
-                                        <input type='text' name='action' defaultValue={form.action.name}
+                                        <input type='text' name='action' value={form.action.name}
                                             onChange={this.handleRouteForm(fIdx)}
                                             required={form.action.button.label.length > 0}/>
                                     </label>
@@ -343,7 +344,7 @@ class RouteEditor extends React.Component
                             <div className='route-props' key={`exit_${idx}`}>
                                 <label className='route-prop'>
                                     Exit Type:
-                                    <select name='exitType' defaultValue={exit.type} onChange={this.handleRouteExit(idx)}>
+                                    <select name='exitType' value={exit.type} onChange={this.handleRouteExit(idx)}>
                                         {
                                             exitTypes.map((type, i) => (
                                                 <option key={`exittype_exit_${idx}_${i}`} value={type}>{ type }</option>
@@ -353,13 +354,13 @@ class RouteEditor extends React.Component
                                 </label>
                                 <label className='route-prop'>
                                     Link Text:
-                                    <input type='text' name='visibleText' defaultValue={exit.visibleText} 
+                                    <input type='text' name='visibleText' value={exit.visibleText} 
                                         onChange={this.handleRouteExit(idx)}
                                         required={exit.route.length > 0}/>
                                 </label>
                                 <label className='route-prop'>
                                     Route:
-                                    <input type='text' name='route' defaultValue={exit.route} 
+                                    <input type='text' name='route' value={exit.route} 
                                         onChange={this.handleRouteExit(idx)}
                                         required={exit.visibleText.length > 0}/>
                                 </label>
@@ -389,17 +390,17 @@ class RouteEditor extends React.Component
                     </form>
                 }
                 {
-                    typeof currentForm !== 'undefined' && <form onSubmit={this.saveFormChanges}>
+                    typeof currentFormIndex !== 'undefined' && formProps && <form onSubmit={this.saveFormChanges}>
                         <h1>Current url: { currentURL }</h1>
                         <div>
                             <label className='form-prop'>
                                 Action Name:
-                                <input type='text' name='name' defaultValue={currentForm.action.name} required onChange={this.handleFormAction}/>
+                                <input type='text' name='name' value={formProps.action.name} required onChange={this.handleFormAction}/>
                             </label>
                         </div>
                         <div>
                             <label htmlFor='description'>Description: </label><br/>
-                            <textarea id='description' name='description' defaultValue={currentForm.action.description}
+                            <textarea id='description' name='description' value={formProps.action.description}
                                 onChange={this.handleFormAction}></textarea>
                             <aside>
                                 <p>
@@ -427,14 +428,14 @@ class RouteEditor extends React.Component
                         <div>
                             <label className='form-prop'>
                                 Button Text:
-                                <input type='text' name='button' defaultValue={currentForm.action.button.label}
+                                <input type='text' name='button' value={formProps.action.button.label}
                                     onChange={this.handleFormAction}/>
                             </label>
                         </div>
                         <div>
                             <label className='form-prop'>
                                 Redirect to:
-                                <input type='text' name='exit' defaultValue={currentForm.action.exit.route}
+                                <input type='text' name='exit' value={formProps.action.exit.route || ''}
                                     onChange={this.handleFormAction}/>
                             </label>
                         </div>
@@ -443,7 +444,7 @@ class RouteEditor extends React.Component
                             formInputs.map((input, ff) => (<div className='input-props' key={`ff_${ff}`}>
                                 <label className='input-prop'>
                                     Input type:
-                                    <select name='type' defaultValue={input.type} onChange={this.handleFormInput(ff)}>
+                                    <select name='type' value={input.type} onChange={this.handleFormInput(ff)}>
                                         {
                                             inputTypes.map((type, i) => (
                                                 <option key={`type_${ff}_${i}`} value={type}>{ type }</option>
@@ -454,18 +455,18 @@ class RouteEditor extends React.Component
                                 </label>
                                 <label className='input-prop'>
                                     Label Text:
-                                    <input type='text' name='label' defaultValue={input.label}
+                                    <input type='text' name='label' value={input.label}
                                         onChange={this.handleFormInput(ff)}
                                         required={ff < formInputs.length - 1}/>
                                 </label>
                                 <label className='input-prop'>
                                     Value:
-                                    <input type='text' name='value' defaultValue={input.value}
+                                    <input type='text' name='value' value={input.value}
                                         onChange={this.handleFormInput(ff)}/>
                                 </label>
                                 <label className='input-prop'>
                                     Attributes:
-                                    <input type='text' name='attributes' defaultValue={input.attributes}
+                                    <input type='text' name='attributes' value={input.attributes}
                                         onChange={this.handleFormInput(ff)}/>
                                 </label>
                             </div>))
@@ -553,7 +554,7 @@ const mapStateToProps = (state) => {
     return {
         currentRoute: state.currentRoute,
         linkLocations: state.linkLocations,
-        currentForm: state.currentForm,
+        currentFormIndex: state.currentFormIndex,
     }
 };
 

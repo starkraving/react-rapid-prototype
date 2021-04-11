@@ -75,7 +75,7 @@ class ConnectedRRP extends React.Component
         const {
             isEditing,
             project,
-            currentForm,
+            currentFormIndex,
             history,
             location,
             dispatchToggleIsEditing,
@@ -91,9 +91,10 @@ class ConnectedRRP extends React.Component
             a.download = 'project.json';
             a.click();
           }
+        
         const renderProps = {
             currentRoute, 
-            currentForm, 
+            currentFormIndex, 
             project, 
             history,
             location,
@@ -104,14 +105,14 @@ class ConnectedRRP extends React.Component
             globalExits: project.globalExits || []
         };
 
-        return (!this.state.currentRoute || isEditing)
+        return (!currentRoute || isEditing)
             ? (<RouteEditor location={location}/>)
             : this.state.renderer(renderProps);
     }
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const {project, isEditing, isUpdated, linkLocations, currentRoute, currentForm} = state;
+    const {project, isEditing, isUpdated, linkLocations, currentRoute, currentFormIndex} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null} = ownProps;
     return {
         project: userDefinedProject || project,
@@ -122,7 +123,7 @@ const mapStateToProps = (state, ownProps) => {
         isUpdated,
         renderProject,
         currentRoute,
-        currentForm,
+        currentFormIndex,
     };
 };
 
@@ -132,7 +133,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatchResetProject: () => dispatch(resetProject()),
         dispatchSetLinkLocations: (locations) => dispatch(setLinkLocations(locations)),
         dispatchSetCurrentRoute: (route) => dispatch(setCurrentRoute(route)),
-        dispatchSetCurrentForm: (form) => dispatch(setCurrentForm(form)),
+        dispatchSetCurrentForm: (formIndex) => dispatch(setCurrentForm(formIndex)),
         dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
     }
