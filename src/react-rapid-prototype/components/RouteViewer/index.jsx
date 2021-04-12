@@ -75,7 +75,7 @@ const RouteViewer = (props) => {
                                             form.inputs.map((input, i) => (
                                                 <div className='inputs' key={`input_${f}_${i}`}>
                                                     {
-                                                        ['text', 'email', 'password', 'number'].indexOf(input.type) > -1 && <label>
+                                                        ['text', 'email', 'url', 'password', 'number', 'file', 'range'].indexOf(input.type) > -1 && <label>
                                                             {input.label}: 
                                                             <input type={input.type} defaultValue={input.value}/>
                                                         </label>
@@ -85,11 +85,35 @@ const RouteViewer = (props) => {
                                                             {input.label}: 
                                                             {
                                                                 input.value.split(',').map((value, k) => (<label key={`label_${f}_${i}_${k}`}>
-                                                                    <input key={`input_${f}_${i}_${k}`} name={`input_${f}_${i}`} type={input.type} value={value}/>
+                                                                    <input key={`input_${f}_${i}_${k}`}
+                                                                        name={`input_${f}_${i}`}
+                                                                        type={input.type}
+                                                                        value={value}/>
                                                                     {value}
                                                                 </label>))
                                                             }
                                                         </span>
+                                                    }
+                                                    {
+                                                        input.type === 'button' && <button type='button' defaultValue={input.value}>{input.label}</button>
+                                                    }
+                                                    {
+                                                        input.type === 'textarea' && <label>
+                                                            {input.label}<br/>
+                                                            <textarea defaultValue={input.value}></textarea>
+                                                        </label>
+                                                    }
+                                                    {
+                                                        input.type === 'select' && <label>
+                                                            {input.label}:
+                                                            <select>
+                                                                {
+                                                                    input.value.split(',').map((value, k) => (
+                                                                        <option key={`option_${f}_${i}_${k}`} value={value}>{value}</option>
+                                                                    ))
+                                                                }
+                                                            </select>
+                                                        </label>
                                                     }
                                                 </div>
                                             ))

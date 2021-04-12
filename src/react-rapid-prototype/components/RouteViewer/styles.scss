@@ -7,7 +7,8 @@
             margin-bottom: 0.5em;
 
             label {
-                input:last-child {
+                input:last-child,
+                select:last-child {
                     margin-left: 0.5em;
                 }
             }

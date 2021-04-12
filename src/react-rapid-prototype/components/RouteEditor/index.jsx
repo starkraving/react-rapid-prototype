@@ -265,7 +265,7 @@ class RouteEditor extends React.Component
         const {location, linkLocations, currentFormIndex} = this.props;
         const currentURL = location.pathname;
         const exitTypes = ['form', 'link', 'global'];
-        const inputTypes = ['text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file'];
+        const inputTypes = ['textarea', 'text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file', 'button'];
         return (
             <section>
                 {
