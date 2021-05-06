@@ -13,6 +13,7 @@ const RouteViewer = (props) => {
         dispatchSetCurrentForm,
         dispatchResetProject,
         globalExits,
+        isDevMode,
     } = props;
 
     const currentURL = location.pathname;
@@ -58,11 +59,13 @@ const RouteViewer = (props) => {
 
             {
                 !currentForm && <div>
-                    <div id='controls'>
-                        <button type='button' onClick={startEditing}>Edit Properties</button>
-                        <button type='button' onClick={handleExport}>Export Project JSON</button>
-                        <button type='button' onClick={resetProject}>Reset</button>
-                    </div>
+                    {
+                        isDevMode && <div id='controls'>
+                            <button type='button' onClick={startEditing}>Edit Properties</button>
+                            <button type='button' onClick={handleExport}>Export Project JSON</button>
+                            <button type='button' onClick={resetProject}>Reset</button>
+                        </div>
+                    }
                     {
                         routeFound && <div>
                             {
@@ -168,9 +171,11 @@ const RouteViewer = (props) => {
                         !currentFormExit && <button onClick={clearFormSelection}>Finished</button>
                     }
 
-                    <div id="controls">
-                        <button onClick={startEditing}>Edit Form</button>
-                    </div>
+                    {
+                        isDevMode && <div id="controls">
+                            <button onClick={startEditing}>Edit Form</button>
+                        </div>
+                    }
                 </div>
               </div>
             }

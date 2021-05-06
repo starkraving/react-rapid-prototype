@@ -17,6 +17,7 @@ const initialState = {
     currentFormIndex: undefined,
     isEditing: false,
     isUpdated: false,
+    isDevMode: process.env.NODE_ENV === 'development',
 };
 
 const appReducer = (state = initialState, action) => {

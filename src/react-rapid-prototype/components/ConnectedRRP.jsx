@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../redux/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
+import NotFound from './RouteViewer/notfound';
 
 class ConnectedRRP extends React.Component
 {
@@ -80,7 +81,8 @@ class ConnectedRRP extends React.Component
             location,
             dispatchToggleIsEditing,
             dispatchSetCurrentForm,
-            dispatchResetProject
+            dispatchResetProject,
+            isDevMode,
         } = this.props;
         const {currentRoute} = this.state;
         const handleExport = () => {
@@ -98,6 +100,7 @@ class ConnectedRRP extends React.Component
             project, 
             history,
             location,
+            isDevMode,
             handleExport,
             dispatchToggleIsEditing,
             dispatchSetCurrentForm,
@@ -106,24 +109,25 @@ class ConnectedRRP extends React.Component
         };
 
         return (!currentRoute || isEditing)
-            ? (<RouteEditor location={location}/>)
+            ? (isDevMode ? <RouteEditor location={location}/> : <NotFound location={location}/>)
             : this.state.renderer(renderProps);
     }
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const {project, isEditing, isUpdated, linkLocations, currentRoute, currentFormIndex} = state;
+    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null} = ownProps;
     return {
         project: userDefinedProject || project,
         isUserDefinedProject: userDefinedProject !== null, 
         linkLocations: userDefinedLocations || linkLocations,
         isUserDefinedLocations: userDefinedLocations !== null,
-        isEditing,
-        isUpdated,
         renderProject,
         currentRoute,
         currentFormIndex,
+        isEditing,
+        isUpdated,
+        isDevMode,
     };
 };
 
