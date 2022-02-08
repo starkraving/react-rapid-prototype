@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContextRRP } from '../../context/store';
-import { saveRoute, toggleIsEditing } from '../../redux/actions';
+import { saveRoute, toggleIsEditing } from '../../context/actions';
 import './styles.scss';
 
 class RouteEditor extends React.Component

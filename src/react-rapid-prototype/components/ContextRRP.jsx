@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { useContextRRP } from '../context/store';
-import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../redux/actions';
+import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../context/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
 import NotFound from './RouteViewer/notfound';
