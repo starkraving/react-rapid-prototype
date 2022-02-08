@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactRapidPrototype from './react-rapid-prototype/ReactRapidPrototype';
-import project from './project.json';
+import project from './strata.json';
 
 function App() {
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useContextRRP } from '../../context/store';
 import { saveRoute, toggleIsEditing } from '../../redux/actions';
 import './styles.scss';
 
@@ -550,19 +550,20 @@ class RouteEditor extends React.Component
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
+const ProppedRouteEditor = (props) => {
+    const {state, dispatch} = useContextRRP();
+    const propsForComponent = {
+        ...props,
+        
         currentRoute: state.currentRoute,
         linkLocations: state.linkLocations,
         currentFormIndex: state.currentFormIndex,
-    }
-};
 
-const mapDispatchToProps = (dispatch) => {
-    return {
         dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchSaveRoute: (routeProps, globalExits = []) => dispatch(saveRoute(routeProps, globalExits)),
-    }
+    };
+
+    return <RouteEditor {...propsForComponent} />;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RouteEditor);
+export default ProppedRouteEditor;

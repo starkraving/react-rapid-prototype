@@ -10,7 +10,7 @@ import {
     TOGGLE_IS_UPDATED
 } from "./actions";
 
-const initialState = {
+export const initialState = {
     project: JSON.parse(JSON.stringify(defaultProject)),
     linkLocations: defaultLocations,
     currentRoute: undefined,
