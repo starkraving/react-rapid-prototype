@@ -1,16 +1,15 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './redux/store';
-import ConnectedRRP from './components/ConnectedRRP';
 import './styles.scss';
+import { ProviderRRP } from './context/store';
+import ContextRRP from './components/ContextRRP';
 
 const ReduxRapidPrototype = (props) => (
-    <Provider store={store}>
+    <ProviderRRP>
         <BrowserRouter>
-            <ConnectedRRP {...props}/>
+            <ContextRRP {...props}/>
         </BrowserRouter>
-    </Provider>
+    </ProviderRRP>
 );
 
 export default ReduxRapidPrototype;
