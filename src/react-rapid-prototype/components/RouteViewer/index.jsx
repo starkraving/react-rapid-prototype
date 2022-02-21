@@ -1,54 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './styles.scss';
+import useRouteViewerProps from './useRouteViewerProps';
 
 const RouteViewer = (props) => {
     const {
         currentRoute,
-        currentFormIndex, 
-        history,
-        location,
-        handleExport,
-        dispatchToggleIsEditing,
-        dispatchSetCurrentForm,
-        dispatchResetProject,
+        currentURL,
+        currentForm,
+        currentFormExit,
         globalExits,
         isDevMode,
-    } = props;
-
-    const currentURL = location.pathname;
-    const routeFound = typeof currentRoute !== 'undefined';
-    const currentForm = (typeof currentFormIndex !== 'undefined' && currentRoute && currentRoute.forms[currentFormIndex])
-        ? currentRoute.forms[currentFormIndex] : undefined;
-    const currentFormExit =
-        typeof currentForm !== 'undefined'
-        && typeof currentForm.action !== 'undefined'
-        && typeof currentForm.action.exit !== 'undefined'
-        && typeof currentForm.action.exit.route === 'string'
-        && currentForm.action.exit.route.length > 0;
-
-    const handleFormButton = (formIndex) => (e) => {
-        dispatchSetCurrentForm(formIndex);
-        e.preventDefault();
-    };
-
-    const startEditing = () => {
-        dispatchToggleIsEditing(true);
-    };
-
-    const clearFormSelection = () => {
-        dispatchSetCurrentForm(undefined);
-    };
-
-    const clearFormAndNavigate = () => {
-        dispatchSetCurrentForm(undefined);
-        history.push(currentForm.action.exit.route);
-    };
-
-    const resetProject = () => {
-        dispatchResetProject();
-        history.push('/');
-    }
+        routeFound,
+        handleFormButton,
+        clearFormSelection,
+        clearFormAndNavigate,
+        DevModeRouteControls,
+        DevModeFormControls
+    } = useRouteViewerProps(props);
 
     return (
         <section id='route_details'>
@@ -60,11 +29,7 @@ const RouteViewer = (props) => {
             {
                 !currentForm && <div>
                     {
-                        isDevMode && <div id='controls'>
-                            <button type='button' onClick={startEditing}>Edit Properties</button>
-                            <button type='button' onClick={handleExport}>Export Project JSON</button>
-                            <button type='button' onClick={resetProject}>Reset</button>
-                        </div>
+                        isDevMode && <DevModeRouteControls/>
                     }
                     {
                         routeFound && <div>
@@ -102,7 +67,7 @@ const RouteViewer = (props) => {
                                                     }
                                                     {
                                                         input.type === 'textarea' && <label>
-                                                            {input.label}<br/>
+                                                            {input.label}:<br/>
                                                             <textarea defaultValue={input.value}></textarea>
                                                         </label>
                                                     }
@@ -164,7 +129,7 @@ const RouteViewer = (props) => {
                 <div>
                     {
                         currentFormExit && <button onClick={clearFormAndNavigate}>
-                            Navigate to {currentForm.action.exit.route} 
+                            Navigate to {currentFormExit} 
                         </button>
                     }
                     {
@@ -172,9 +137,7 @@ const RouteViewer = (props) => {
                     }
 
                     {
-                        isDevMode && <div id="controls">
-                            <button onClick={startEditing}>Edit Form</button>
-                        </div>
+                        isDevMode && <DevModeFormControls/>
                     }
                 </div>
               </div>
