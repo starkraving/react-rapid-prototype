@@ -5,6 +5,7 @@ export const SET_CURRENT_ROUTE = 'SET_CURRENT_ROUTE';
 export const SET_CURRENT_FORM = 'SET_CURRENT_FORM';
 export const TOGGLE_IS_EDITING = 'TOGGLE_IS_EDITING';
 export const TOGGLE_IS_UPDATED = 'TOGGLE_IS_UPDATED';
+export const TOGGLE_IS_PREVIEWING = 'TOGGLE_IS_PREVIEWING';
 export const SAVE_ROUTE = 'SAVE_ROUTE';
 
 export const setProject = (project) => ({
@@ -39,6 +40,11 @@ export const toggleIsEditing = (isEditing) => ({
 export const toggleIsUpdated = (isUpdated) => ({
     type: TOGGLE_IS_UPDATED,
     payload: isUpdated
+});
+
+export const toggleIsPreviewing = (isPreviewing) => ({
+    type: TOGGLE_IS_PREVIEWING,
+    payload: isPreviewing
 });
 
 export const saveRoute = (routeProps, globalExits = []) => ({

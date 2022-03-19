@@ -1,10 +1,11 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { useContextRRP } from '../context/store';
-import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsUpdated } from '../context/actions';
+import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsPreviewing, toggleIsUpdated } from '../context/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
 import NotFound from './RouteViewer/notfound';
+import CodePreviewer from './CodePreviewer';
 
 class ContextRRP extends React.Component
 {
@@ -75,11 +76,13 @@ class ContextRRP extends React.Component
     render() {
         const {
             isEditing,
+            isPreviewing,
             project,
             currentFormIndex,
             history,
             location,
             dispatchToggleIsEditing,
+            dispatchToggleIsPreviewing,
             dispatchSetCurrentForm,
             dispatchResetProject,
             isDevMode,
@@ -93,6 +96,12 @@ class ContextRRP extends React.Component
             a.download = 'project.json';
             a.click();
           }
+
+        const previewProps = {
+            dispatchToggleIsPreviewing,
+            location,
+            currentRoute
+        };
         
         const renderProps = {
             currentRoute, 
@@ -101,8 +110,10 @@ class ContextRRP extends React.Component
             history,
             location,
             isDevMode,
+            isPreviewing,
             handleExport,
             dispatchToggleIsEditing,
+            dispatchToggleIsPreviewing,
             dispatchSetCurrentForm,
             dispatchResetProject,
             globalExits: project.globalExits || []
@@ -110,13 +121,13 @@ class ContextRRP extends React.Component
 
         return (!currentRoute || isEditing)
             ? (isDevMode ? <RouteEditor location={location}/> : <NotFound location={location}/>)
-            : this.state.renderer(renderProps);
+            : (isPreviewing ? <CodePreviewer {...previewProps}>{this.state.renderer(renderProps)}</CodePreviewer> : this.state.renderer(renderProps));
     }
 }
 
 const ProppedRRP = (ownProps) => {
     const {state, dispatch} = useContextRRP();
-    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode} = state;
+    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode, isPreviewing} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null, location, history} = ownProps;
     const propsForComponent = {
         project: userDefinedProject || project,
@@ -129,6 +140,7 @@ const ProppedRRP = (ownProps) => {
         isEditing,
         isUpdated,
         isDevMode,
+        isPreviewing,
         location,
         history,
 
@@ -139,6 +151,7 @@ const ProppedRRP = (ownProps) => {
         dispatchSetCurrentForm: (formIndex) => dispatch(setCurrentForm(formIndex)),
         dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
+        dispatchToggleIsPreviewing: (isPreviewing) => dispatch(toggleIsPreviewing(isPreviewing)),
     };
 
     return <ContextRRP {...propsForComponent} />;

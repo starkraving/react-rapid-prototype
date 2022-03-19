@@ -7,6 +7,7 @@ import {
     SET_LINK_LOCATIONS,
     SET_PROJECT,
     TOGGLE_IS_EDITING,
+    TOGGLE_IS_PREVIEWING,
     TOGGLE_IS_UPDATED
 } from "./actions";
 
@@ -17,6 +18,7 @@ export const initialState = {
     currentFormIndex: undefined,
     isEditing: false,
     isUpdated: false,
+    isPreviewing: false,
     isDevMode: process.env.NODE_ENV === 'development',
 };
 
@@ -59,7 +61,12 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isUpdated: action.payload,
-            }
+            };
+        case TOGGLE_IS_PREVIEWING :
+            return {
+                ...state,
+                isPreviewing: action.payload,
+            };
         case SAVE_ROUTE :
             const {routeProps, globalExits} = action.payload;
             return {

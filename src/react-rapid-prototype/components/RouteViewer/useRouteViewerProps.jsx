@@ -5,6 +5,7 @@ const useRouteViewerProps = function(props) {
         history,
         location,
         dispatchToggleIsEditing,
+        dispatchToggleIsPreviewing,
         dispatchSetCurrentForm,
         dispatchResetProject,
 
@@ -12,6 +13,7 @@ const useRouteViewerProps = function(props) {
         handleExport,
         globalExits,
         isDevMode,
+        isPreviewing,
     } = props;
 
     const currentURL = location.pathname;
@@ -29,6 +31,10 @@ const useRouteViewerProps = function(props) {
     const handleFormButton = (formIndex) => (e) => {
         dispatchSetCurrentForm(formIndex);
         e.preventDefault();
+    };
+
+    const startPreviewing = () => {
+        dispatchToggleIsPreviewing(true);
     };
 
     const startEditing = () => {
@@ -51,6 +57,9 @@ const useRouteViewerProps = function(props) {
 
     const DevModeRouteControls = () => (
         <div id='controls'>
+            {
+                routeFound && <button type='button' onClick={startPreviewing}>Preview Code</button>
+            }
             <button type='button' onClick={startEditing}>Edit Properties</button>
             <button type='button' onClick={handleExport}>Export Project JSON</button>
             <button type='button' onClick={resetProject}>Reset</button>
@@ -70,6 +79,7 @@ const useRouteViewerProps = function(props) {
         currentFormExit,
         globalExits,
         isDevMode,
+        isPreviewing,
         routeFound,
         handleFormButton,
         clearFormSelection,

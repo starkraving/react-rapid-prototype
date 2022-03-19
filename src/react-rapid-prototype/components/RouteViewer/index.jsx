@@ -11,6 +11,7 @@ const RouteViewer = (props) => {
         currentFormExit,
         globalExits,
         isDevMode,
+        isPreviewing,
         routeFound,
         handleFormButton,
         clearFormSelection,
@@ -29,15 +30,15 @@ const RouteViewer = (props) => {
             {
                 !currentForm && <div>
                     {
-                        isDevMode && <DevModeRouteControls/>
+                        isDevMode && !isPreviewing && <DevModeRouteControls/>
                     }
                     {
-                        routeFound && <div>
+                        routeFound && <div data-content-start>
                             {
                                 currentRoute.forms.length > 0 && <h3>Forms</h3>
                             }
                             {
-                                currentRoute.forms.map((form, f) => (<form key={`form_${f}`} onSubmit={handleFormButton(f)}>
+                                currentRoute.forms.map((form, f) => (<form data-content-form={form.action.name} key={`form_${f}`} onSubmit={handleFormButton(f)}>
                                     <div className='pageForm'>
                                         {
                                             form.inputs.map((input, i) => (
@@ -97,7 +98,7 @@ const RouteViewer = (props) => {
                                         {
                                             currentRoute.exits.map((exit, e) => (
                                                 <li key={`exit_${e}`}>
-                                                    <Link to={exit.route}>{exit.visibleText}</Link>
+                                                    <Link data-content-exit to={exit.route}>{exit.visibleText}</Link>
                                                 </li>
                                             ))
                                         }
@@ -113,7 +114,7 @@ const RouteViewer = (props) => {
                                 {
                                     globalExits.map((exit, e) => (
                                         <li key={`global_${e}`}>
-                                            <Link to={exit.route}>{exit.visibleText}</Link>
+                                            <Link data-content-exit to={exit.route}>{exit.visibleText}</Link>
                                         </li>
                                     ))
                                 }
@@ -137,7 +138,7 @@ const RouteViewer = (props) => {
                     }
 
                     {
-                        isDevMode && <DevModeFormControls/>
+                        isDevMode && !isPreviewing && <DevModeFormControls/>
                     }
                 </div>
               </div>
