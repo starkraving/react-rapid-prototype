@@ -72,6 +72,29 @@ const useRouteViewerProps = function(props) {
         </div>
     );
 
+    const bucketedExits = [
+        ...currentRoute.exits,
+        ...globalExits
+    ].reduce((collector, exit) => {
+        exit.routeLocations.forEach((loc) => {
+            if (!collector.hasOwnProperty(loc)) {
+                collector[loc] = [];
+            }
+            collector[loc].push(exit);
+        });
+        return collector;
+    }, {});
+
+    const bucketedForms = currentRoute.forms.reduce((collector, form) => {
+        form.action.exit.routeLocations.forEach((loc) => {
+            if (!collector.hasOwnProperty(loc)) {
+                collector[loc] = [];
+            }
+            collector[loc].push(form);
+        })
+        return collector;
+    }, {});
+
     return {
         currentRoute,
         currentURL,
@@ -81,6 +104,8 @@ const useRouteViewerProps = function(props) {
         isDevMode,
         isPreviewing,
         routeFound,
+        bucketedExits,
+        bucketedForms,
         handleFormButton,
         clearFormSelection,
         clearFormAndNavigate,

@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&display=swap');
+
+#container {
+    box-sizing: border-box;
+    color: #333;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    a {
+        color: #3487aa;
+        text-decoration: none;
+    }
+
+    header {
+        background-color: #E0E2E6;
+        border-bottom: 1px solid #ccc;
+
+        > div {
+            max-width: 1100px;
+            height: 44px;
+            margin: 0 auto;
+            padding: 10px 0;
+            position: relative;
+
+            h1 {
+                font-family: Oxanium;
+                font-weight: 600;
+                font-size: 18px;
+                color: #1C485C;
+                margin: 0;
+                padding: 0;
+                line-height: 1;
+
+                svg {
+                    display: inline-block;
+                    margin-right: 4px;
+                    vertical-align: middle;
+                }
+            }
+
+            #topnav {
+                position: absolute;
+                top: 0;
+                right: 0;
+                
+                ul {
+                    list-style-type: none;
+                    text-indent: 0;
+                    margin: 0;
+
+                    li {
+                        display: inline-block;
+
+                        a {
+                            display: inline-block;
+                            height: 44px;
+                            padding: 15px 7px;
+                            text-decoration: none;
+                            font-family: Oxanium;
+                            font-weight: 600;
+                            font-size: 14px;
+                            color: #1C485C;
+
+                            &.active {
+                                background-color: #5cdbd2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    main {
+        max-width: 1100px;
+        margin: 0 auto;
+
+        .details {
+            figure {
+                position: relative;
+                margin: 0;
+                max-height: 200px;
+                overflow-y: hidden;
+
+                img {
+                    max-width: 100%;
+                }
+
+                figcaption {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    top: 50%;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    text-align: center;
+                    padding-top: 30px;
+                    
+                    strong {
+                        display: block;
+                        text-align: center;
+                        font-size: 1.4em;
+                        font-family: Oxanium;
+                        font-weight: 600;
+                    }
+                }
+            }
+
+            p {
+                margin-top: 30px;
+                padding: 0 90px 20px;
+            }
+        }
+
+        section {
+            margin-top: 20px;
+            padding: 20px 0 0;
+            position: relative;
+
+            &:not(:first-child) {
+                border-top: 1px solid #ccc;
+            }
+
+            h2 {
+                font-family: Oxanium;
+                font-weight: 600;
+                font-size: 18px;
+                color: #1C485C;
+                margin: 0;
+            }
+
+            nav {
+                position: absolute;
+                top: 20px;
+                right: 0;
+
+                a {
+                    font-size: 14px;
+                }
+            }
+
+            form {
+                margin-top: 20px;
+
+                .inputs {
+                    & ~ .inputs {
+                        margin-top: 10px;
+                    }
+
+                    .label {
+                        display: block;
+                    }
+
+                    [type=text], [type=email], [type=password], [type=number], [type=url], [type=file], [type=range], select, textarea {
+                        width: 100%;
+                        padding: 8px;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                    }
+
+                    textarea {
+                        height: 95px;
+                    }
+                }
+
+                .buttons {
+                    margin-top: 10px;
+                    text-align: right;
+
+                    button {
+                        display: inline-block;
+                        padding: 8px;
+                        border: none;
+                        border-radius: 5px;
+                        background-color: #1C485C;
+                        color: #fff;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+
+        .cards {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 20px;
+
+            > section {
+                margin-top: 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 20px;
+
+                nav {
+                    right: 20px;
+                }
+
+                dt:not(:first-child) {
+                    margin-top: 0.7em;
+                }
+            }
+        }
+
+        #home_cal {
+            font-size: 14px;
+
+            ul {
+                list-style-type: none;
+                margin: 20px 0 0;
+                text-indent: 0;
+                padding: 0;
+                border: 1px solid #ccc;
+                background-color: #ccc;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                column-gap: 1px;
+
+                li {
+                    display: block;
+                    background-color: #fff;
+                    padding: 20px;
+
+                    &.lastmonth {
+                        background-color: #eee;
+                    }
+
+                    strong {
+                        display: block;
+                        margin-bottom: 0.5em;
+                    }
+                }
+            }
+        }
+    }
+
+    footer {
+        background-color: #1C485C;
+        color: #fff;
+        padding: 0;
+        font-size: 14px;
+        margin-top: 40px;
+
+        a {
+            color: #fff;
+        }
+
+        > div {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            padding: 40px 0;
+
+            h2 {
+                font-family: Oxanium;
+                font-weight: 600;
+                font-size: 18px;
+                color: #fff;
+                margin: 0;
+                padding: 0;
+                line-height: 1;
+
+                svg {
+                    display: inline-block;
+                    margin-right: 4px;
+                    vertical-align: middle;
+                }
+            }
+
+            aside {
+                position: absolute;
+                top: 40px;
+                right: 0;
+            }
+
+            > ul {
+                display: grid;
+                list-style-type: none;
+                margin: 40px 0;
+                text-indent: 0;
+                padding: 0;
+                grid-template-columns: 1fr 1fr 1fr;
+
+                > li > strong {
+                    display: block;
+                }
+
+                ul {
+                    list-style-type: none;
+                    margin: 2em 0 0;
+                    padding: 0;
+                    text-indent: 0;
+
+                    li {
+                        margin-top: 0.7em;
+                    }
+                }
+            }
+        }
+    }
+}
