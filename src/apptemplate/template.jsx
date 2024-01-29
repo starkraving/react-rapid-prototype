@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from './Logo';
 import './styles.scss';
-import useRouteViewerProps from '../react-rapid-prototype/components/RouteViewer/useRouteViewerProps';
+import useRouteViewerProps from 'react-rapid-prototype/components/RouteViewer/useRouteViewerProps';
 import { Link, NavLink } from 'react-router-dom';
 
 const AppTemplate = (props) => {
@@ -27,7 +27,7 @@ const AppTemplate = (props) => {
     const prototypedDescription = {
         '/': <div className='details'>
                 <figure>
-                <img src='/images/properties/12345.png' alt='Oxford Court (Strata LMS 842)' />
+                <img src='/images/properties/12345.png' alt='Oxford Court (Strata XXX 333)' />
                 <figcaption>
                     <strong>Oxford Court (Strata LMS 842)</strong>
                     20257 54th Ave, Langley BC
@@ -62,27 +62,27 @@ const AppTemplate = (props) => {
                         <Link to={card.route} data-content-exit>{card.visibleText}</Link>
                     </nav>
                     <dl>
-                        <dt>Darryl McDonald, President</dt>
+                        <dt>Danny McDonald, President</dt>
                         <dd>
-                            <a href="mailto:stratalms842@gmail.com">stratalms842@gmail.com</a>
+                            <a href="mailto:someone@somewhere.com">someone@somewhere.com</a>
                             <br />
                             <a href="tel:604-555-5555">604-555-5555</a>
                         </dd>
-                        <dt>Nancy Glover, Secretary</dt>
+                        <dt>Nancy Gordon, Secretary</dt>
                         <dd>
-                            <a href="mailto:stratalms842@gmail.com">stratalms842@gmail.com</a>
+                            <a href="mailto:someone@somewhere.com">someone@somewhere.com</a>
                             <br />
                             <a href="tel:604-555-5555">604-555-5555</a>
                         </dd>
-                        <dt>Mike Ritchie, Secretary</dt>
+                        <dt>Matt Richards, Treasurer</dt>
                         <dd>
-                            <a href="mailto:stratalms842@gmail.com">stratalms842@gmail.com</a>
+                            <a href="mailto:someone@somewhere.com">someone@somewhere.com</a>
                             <br />
                             <a href="tel:604-555-5555">604-555-5555</a>
                         </dd>
-                        <dt>Shana Philips</dt>
+                        <dt>Stan Phelps</dt>
                         <dd>
-                            <a href="mailto:stratalms842@gmail.com">stratalms842@gmail.com</a>
+                            <a href="mailto:someone@somewhere.com">someone@somewhere.com</a>
                             <br />
                             <a href="tel:604-555-5555">604-555-5555</a>
                         </dd>

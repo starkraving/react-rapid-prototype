@@ -1,0 +1,31 @@
+{
+  "name": "react-rapid-prototype",
+  "version": "0.1.52",
+  "description": "Rapid scoping, prototyping and scaffolding of a React app",
+  "src": "./ReactRapidPrototype.jsx",
+  "main": "dist/ReactRapidPrototype.js",
+  "module": "dist/ReactRapidPrototype.module.js",
+  "unpkg": "dist/ReactRapidPrototype.umd.js",
+  "scripts": {
+    "build": "microbundle-crl",
+    "dev": "microbundle-crl watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starkraving/react-rapid-prototype.git"
+  },
+  "author": "Mike Ritchie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/starkraving/react-rapid-prototype/issues"
+  },
+  "homepage": "https://github.com/starkraving/react-rapid-prototype#readme",
+  "peerDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "microbundle-crl": "^0.13.11"
+  }
+}
