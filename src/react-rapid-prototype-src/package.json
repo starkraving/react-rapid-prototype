@@ -1,14 +1,17 @@
 {
   "name": "react-rapid-prototype",
-  "version": "0.1.52",
+  "version": "0.2.09",
   "description": "Rapid scoping, prototyping and scaffolding of a React app",
-  "src": "./ReactRapidPrototype.jsx",
-  "main": "dist/ReactRapidPrototype.js",
-  "module": "dist/ReactRapidPrototype.module.js",
-  "unpkg": "dist/ReactRapidPrototype.umd.js",
+  "src": "src/index.jsx",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "microbundle-crl",
-    "dev": "microbundle-crl watch"
+    "build": "rm -rf dist && babel src --out-dir dist --extensions '.js,.jsx' --copy-files"
   },
   "repository": {
     "type": "git",
@@ -23,9 +26,13 @@
   "peerDependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-router-dom": "^5.2.0"
+    "react-router": "^5.3.4",
+    "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.11"
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1"
   }
 }

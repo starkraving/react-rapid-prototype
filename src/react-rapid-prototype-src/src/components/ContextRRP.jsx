@@ -1,7 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { useContextRRP } from '../context/store';
-import { resetProject, setCurrentForm, setCurrentRoute, setLinkLocations, setProject, toggleIsEditing, toggleIsPreviewing, toggleIsUpdated } from '../context/actions';
+import {
+    resetProject,
+    setCurrentForm,
+    setCurrentRoute,
+    setLinkLocations,
+    setProject,
+    toggleIsEditing,
+    toggleIsPreviewing,
+    toggleIsUpdated
+} from '../context/actions';
 import RouteEditor from './RouteEditor';
 import RouteViewer from './RouteViewer';
 import NotFound from './RouteViewer/notfound';
@@ -9,12 +18,13 @@ import CodePreviewer from './CodePreviewer';
 
 class ContextRRP extends React.Component
 {
-    defaultRenderer = (props) => (<RouteViewer {...props}></RouteViewer>);
 
     constructor(props) {
         super(props);
+
+        const defaultRenderer = (props) => {return (<RouteViewer {...props}></RouteViewer>)};
         this.state = {
-            renderer: this.defaultRenderer,
+            renderer: defaultRenderer,
             currentRoute: null
         };
         this.handleCurrentRoute = this.handleCurrentRoute.bind(this);

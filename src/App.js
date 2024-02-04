@@ -1,7 +1,7 @@
 import React from 'react';
 import AppTemplate from './apptemplate/template';
 import project from './strata.json';
-import ReactRapidPrototype from 'react-rapid-prototype';
+import {ReactRapidPrototype} from 'react-rapid-prototype';
 
 function App() {
   return (

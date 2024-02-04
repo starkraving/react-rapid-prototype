@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from './Logo';
 import './styles.scss';
-import useRouteViewerProps from 'react-rapid-prototype/components/RouteViewer/useRouteViewerProps';
+import {useRouteViewerProps} from 'react-rapid-prototype'
 import { Link, NavLink } from 'react-router-dom';
 
 const AppTemplate = (props) => {
@@ -29,13 +29,13 @@ const AppTemplate = (props) => {
                 <figure>
                 <img src='/images/properties/12345.png' alt='Oxford Court (Strata XXX 333)' />
                 <figcaption>
-                    <strong>Oxford Court (Strata LMS 842)</strong>
-                    20257 54th Ave, Langley BC
+                    <strong>Oxford Court (Strata LMS 000)</strong>
+                    123 Any Street, Someville BC
                 </figcaption>
             </figure>
             <p>
-                A 17-unit condominium located in the heart of Downtown Langley City. Minutes away from walking trails, shopping,
-                restaurants, and the future site of the proposed Skytrain.
+                A 17-unit condominium located in the heart of Downtown Someville. Minutes away from walking trails, shopping,
+                restaurants, and the future site of a Skytrain station.
             </p>
         </div>
     };
@@ -297,16 +297,16 @@ const AppTemplate = (props) => {
                             <strong>General Information</strong>
                             <ul>
                                 <li>
-                                    <a href="#">About My Strata Hub</a>
+                                    <a href="/#">About My Strata Hub</a>
                                 </li>
                                 <li>
-                                    <a href="#">Pricing</a>
+                                    <a href="/#">Pricing</a>
                                 </li>
                                 <li>
-                                    <a href="#">Sign up your Strata</a>
+                                    <a href="/#">Sign up your Strata</a>
                                 </li>
                                 <li>
-                                    <a href="#">Contact Us</a>
+                                    <a href="/#">Contact Us</a>
                                 </li>
                             </ul>
                         </li>
@@ -314,16 +314,16 @@ const AppTemplate = (props) => {
                             <strong>Join us on the Socials</strong>
                             <ul>
                                 <li>
-                                    <a href="#">Facebook</a>
+                                    <a href="/#">Facebook</a>
                                 </li>
                                 <li>
-                                    <a href="#">Instagram</a>
+                                    <a href="/#">Instagram</a>
                                 </li>
                                 <li>
-                                    <a href="#">Twitter</a>
+                                    <a href="/#">Twitter</a>
                                 </li>
                                 <li>
-                                    <a href="#">Blog</a>
+                                    <a href="/#">Blog</a>
                                 </li>
                             </ul>
                         </li>
