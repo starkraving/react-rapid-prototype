@@ -42,11 +42,10 @@ const AppTemplate = (props) => {
 
     const prototypedCard = (card, idx) => {
         if (card.inputs) {
-            const form = card;
             return <section key={`cardform_${idx}`}>
-                <h2>{form.action.button.label}</h2>
-                <form data-content-form={form.action.name} onSubmit={handleFormButton(idx)}>
-                    {formInputs(form.inputs, `card_${idx}`)}
+                <h2>{card.action.button.label}</h2>
+                <form data-content-form={card.action.name} onSubmit={handleFormButton(idx)}>
+                    {formInputs(card.inputs, idx)}
                     <div className="buttons">
                         <button type='submit'>Continue</button>
                     </div>
@@ -148,13 +147,6 @@ const AppTemplate = (props) => {
         </div>
     ));
 
-    const cards = [
-        ...(bucketedExits.card || []),
-        ...(bucketedForms.card || [])
-    ];
-
-
-
     return (
         <div id='container'>
             <header>
@@ -240,9 +232,12 @@ const AppTemplate = (props) => {
                     </section>
                 }
                 {
-                    cards.length > 0 && <div className='cards'>
+                    (bucketedExits.hasOwnProperty('card') || bucketedForms.hasOwnProperty('card')) && <div className='cards'>
                         {
-                            cards.map((card, idx) => prototypedCard(card, idx))
+                            bucketedExits.hasOwnProperty('card') && bucketedExits.card.map(prototypedCard)
+                        }
+                        {
+                            bucketedForms.hasOwnProperty('card') && bucketedForms.card.map(prototypedCard)
                         }
                     </div>
                 }
