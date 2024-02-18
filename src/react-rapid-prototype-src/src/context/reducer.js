@@ -1,6 +1,7 @@
 import { defaultLocations, defaultProject } from "../components/defaults";
 import {
     RESET_PROJECT,
+    SAVE_PROJECT,
     SAVE_ROUTE,
     SET_CURRENT_FORM,
     SET_CURRENT_ROUTE,
@@ -8,6 +9,7 @@ import {
     SET_PROJECT,
     TOGGLE_IS_EDITING,
     TOGGLE_IS_PREVIEWING,
+    TOGGLE_IS_PROJECTSERVER,
     TOGGLE_IS_UPDATED
 } from "./actions";
 
@@ -20,6 +22,7 @@ export const initialState = {
     isUpdated: false,
     isPreviewing: false,
     isDevMode: process.env.NODE_ENV === 'development',
+    isProjectServer: false,
 };
 
 const appReducer = (state = initialState, action) => {
@@ -67,6 +70,11 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 isPreviewing: action.payload,
             };
+        case TOGGLE_IS_PROJECTSERVER :
+            return {
+                ...state,
+                isProjectServer: action.payload,
+            };
         case SAVE_ROUTE :
             const {routeProps, globalExits} = action.payload;
             return {
@@ -75,6 +83,9 @@ const appReducer = (state = initialState, action) => {
                 currentRoute: routeProps,
                 isUpdated: true,
             }
+        case SAVE_PROJECT :
+            console.log(action.payload);
+            return state;
         default:
             return state;
     }

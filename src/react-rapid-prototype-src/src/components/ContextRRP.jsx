@@ -9,6 +9,7 @@ import {
     setProject,
     toggleIsEditing,
     toggleIsPreviewing,
+    toggleIsProjectServer,
     toggleIsUpdated
 } from '../context/actions';
 import RouteEditor from './RouteEditor';
@@ -31,15 +32,32 @@ class ContextRRP extends React.Component
     }
 
     componentDidMount() {
+
         const {
             project, 
             renderProject = null, 
             linkLocations,
             dispatchSetLinkLocations,
             dispatchSetProject,
+            dispatchToggleIsProjectServer,
             isUserDefinedProject,
             isUserDefinedLocations,
         } = this.props;
+
+        // check to see if project server is running
+        if (process && process.env && process.env.REACT_APP_SERVER_PORT) {
+            console.log('SERVER PORT: ', process.env.REACT_APP_SERVER_PORT);
+            fetch('http://localhost:'+process.env.REACT_APP_SERVER_PORT+'/health')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status && data.status === 'OK') {
+                        dispatchToggleIsProjectServer(true);
+                    }
+                })
+                .catch(() => {
+                    dispatchToggleIsProjectServer(false);
+                });
+        }
 
         if (renderProject) {
             this.setState({renderer: renderProject});
@@ -87,6 +105,7 @@ class ContextRRP extends React.Component
         const {
             isEditing,
             isPreviewing,
+            isProjectServer,
             project,
             currentFormIndex,
             history,
@@ -121,6 +140,7 @@ class ContextRRP extends React.Component
             location,
             isDevMode,
             isPreviewing,
+            isProjectServer,
             handleExport,
             dispatchToggleIsEditing,
             dispatchToggleIsPreviewing,
@@ -137,7 +157,7 @@ class ContextRRP extends React.Component
 
 const ProppedRRP = (ownProps) => {
     const {state, dispatch} = useContextRRP();
-    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode, isPreviewing} = state;
+    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode, isPreviewing, isProjectServer} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null, location, history} = ownProps;
     const propsForComponent = {
         project: userDefinedProject || project,
@@ -151,6 +171,7 @@ const ProppedRRP = (ownProps) => {
         isUpdated,
         isDevMode,
         isPreviewing,
+        isProjectServer,
         location,
         history,
 
@@ -162,6 +183,7 @@ const ProppedRRP = (ownProps) => {
         dispatchToggleIsEditing: (isEditing) => dispatch(toggleIsEditing(isEditing)),
         dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
         dispatchToggleIsPreviewing: (isPreviewing) => dispatch(toggleIsPreviewing(isPreviewing)),
+        dispatchToggleIsProjectServer: (isProjectServer) => dispatch(toggleIsProjectServer(isProjectServer)),
     };
 
     return <ContextRRP {...propsForComponent} />;

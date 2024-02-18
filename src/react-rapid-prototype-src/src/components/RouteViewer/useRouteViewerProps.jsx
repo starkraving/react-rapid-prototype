@@ -14,6 +14,7 @@ const useRouteViewerProps = function(props) {
         globalExits,
         isDevMode,
         isPreviewing,
+        isProjectServer,
     } = props;
 
     const currentURL = location.pathname;
@@ -61,7 +62,11 @@ const useRouteViewerProps = function(props) {
                 routeFound && <button type='button' onClick={startPreviewing}>Preview Code</button>
             }
             <button type='button' onClick={startEditing}>Edit Properties</button>
-            <button type='button' onClick={handleExport}>Export Project JSON</button>
+            {
+                isProjectServer
+                    ? <button type='button'>Save Project</button>
+                    : <button type='button' onClick={handleExport}>Export Project JSON</button>
+            }
             <button type='button' onClick={resetProject}>Reset</button>
         </div>
     );
@@ -76,21 +81,25 @@ const useRouteViewerProps = function(props) {
         ...currentRoute.exits,
         ...globalExits
     ].reduce((collector, exit) => {
-        exit.routeLocations.forEach((loc) => {
-            if (!collector.hasOwnProperty(loc)) {
-                collector[loc] = [];
+        const exitLocations = exit && exit.routeLocations && exit.routeLocations.length ? exit.routeLocations : ['general'];
+        exitLocations.forEach((loc) => {
+            const fixedLoc = loc.length > 0 ? loc : 'general';
+            if (!collector.hasOwnProperty(fixedLoc)) {
+                collector[fixedLoc] = [];
             }
-            collector[loc].push(exit);
+            collector[fixedLoc].push(exit);
         });
         return collector;
     }, {});
 
     const bucketedForms = currentRoute.forms.reduce((collector, form) => {
-        form.action.exit.routeLocations.forEach((loc) => {
-            if (!collector.hasOwnProperty(loc)) {
-                collector[loc] = [];
+        const formLocations = form.action && form.action.exit && form.action.exit.routeLocations && form.action.exit.routeLocations.length ? form.action.exit.routeLocations : ['general']
+        formLocations.forEach((loc) => {
+            const fixedLoc = loc.length > 0 ? loc : 'general';
+            if (!collector.hasOwnProperty(fixedLoc)) {
+                collector[fixedLoc] = [];
             }
-            collector[loc].push(form);
+            collector[fixedLoc].push(form);
         })
         return collector;
     }, {});
