@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import {ReactRapidPrototype} from './react-rapid-prototype-src/src';
+import {ReactRapidPrototype} from 'react-rapid-prototype';
 
 const LazyLoadedApp = () => {
   const [project, setProject] = useState(null);

@@ -7,8 +7,8 @@ export const TOGGLE_IS_EDITING = 'TOGGLE_IS_EDITING';
 export const TOGGLE_IS_UPDATED = 'TOGGLE_IS_UPDATED';
 export const TOGGLE_IS_PREVIEWING = 'TOGGLE_IS_PREVIEWING';
 export const TOGGLE_IS_PROJECTSERVER = 'TOGGLE_IS_PROJECTSERVER';
+export const TOGGLE_IS_SAVINGPROJECT = 'TOGGLE_IS_SAVINGPROJECT';
 export const SAVE_ROUTE = 'SAVE_ROUTE';
-export const SAVE_PROJECT = 'SAVE_PROJECT';
 
 export const setProject = (project) => ({
     type: SET_PROJECT,
@@ -54,12 +54,12 @@ export const toggleIsProjectServer = (isProjectServer) => ({
     payload: isProjectServer
 });
 
+export const toggleIsSavingProject = (isSavingProject) => ({
+    type: TOGGLE_IS_SAVINGPROJECT,
+    payload: isSavingProject
+});
+
 export const saveRoute = (routeProps, globalExits = []) => ({
     type: SAVE_ROUTE,
     payload: {routeProps, globalExits}
-});
-
-export const saveProject = () => ({
-    type: SAVE_PROJECT,
-    payload: {...process.env}
 });

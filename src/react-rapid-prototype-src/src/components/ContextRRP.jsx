@@ -10,6 +10,7 @@ import {
     toggleIsEditing,
     toggleIsPreviewing,
     toggleIsProjectServer,
+    toggleIsSavingProject,
     toggleIsUpdated
 } from '../context/actions';
 import RouteEditor from './RouteEditor';
@@ -106,6 +107,7 @@ class ContextRRP extends React.Component
             isEditing,
             isPreviewing,
             isProjectServer,
+            isSavingProject,
             project,
             currentFormIndex,
             history,
@@ -114,9 +116,12 @@ class ContextRRP extends React.Component
             dispatchToggleIsPreviewing,
             dispatchSetCurrentForm,
             dispatchResetProject,
+            dispatchToggleIsSavingProject,
             isDevMode,
         } = this.props;
+
         const {currentRoute} = this.state;
+
         const handleExport = () => {
             const a = document.createElement('a');
             a.href = URL.createObjectURL(
@@ -124,7 +129,31 @@ class ContextRRP extends React.Component
             );
             a.download = 'project.json';
             a.click();
-          }
+        }
+
+        const handleSaveProject = () => {
+            if (process && process.env && process.env.REACT_APP_SERVER_PORT && !isSavingProject) {
+                dispatchToggleIsSavingProject(true);
+                fetch('http://localhost:'+process.env.REACT_APP_SERVER_PORT+'/project', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({project})
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'OK' && data.message) {
+                            console.log(data.message);
+                            dispatchToggleIsSavingProject(false);
+                        }
+                    })
+                    .catch(() => {
+                        console.error('Saving project not successful');
+                        dispatchToggleIsSavingProject(false);
+                    });
+            }
+        }
 
         const previewProps = {
             dispatchToggleIsPreviewing,
@@ -141,7 +170,9 @@ class ContextRRP extends React.Component
             isDevMode,
             isPreviewing,
             isProjectServer,
+            isSavingProject,    
             handleExport,
+            handleSaveProject,
             dispatchToggleIsEditing,
             dispatchToggleIsPreviewing,
             dispatchSetCurrentForm,
@@ -157,7 +188,7 @@ class ContextRRP extends React.Component
 
 const ProppedRRP = (ownProps) => {
     const {state, dispatch} = useContextRRP();
-    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode, isPreviewing, isProjectServer} = state;
+    const {project, linkLocations, currentRoute, currentFormIndex, isEditing, isUpdated, isDevMode, isPreviewing, isProjectServer, isSavingProject} = state;
     const {project: userDefinedProject = null, renderProject = null, linkLocations: userDefinedLocations = null, location, history} = ownProps;
     const propsForComponent = {
         project: userDefinedProject || project,
@@ -172,6 +203,7 @@ const ProppedRRP = (ownProps) => {
         isDevMode,
         isPreviewing,
         isProjectServer,
+        isSavingProject,
         location,
         history,
 
@@ -184,6 +216,7 @@ const ProppedRRP = (ownProps) => {
         dispatchToggleIsUpdated: (isUpdated) => dispatch(toggleIsUpdated(isUpdated)),
         dispatchToggleIsPreviewing: (isPreviewing) => dispatch(toggleIsPreviewing(isPreviewing)),
         dispatchToggleIsProjectServer: (isProjectServer) => dispatch(toggleIsProjectServer(isProjectServer)),
+        dispatchToggleIsSavingProject: (isSavingProject) => dispatch(toggleIsSavingProject(isSavingProject)),
     };
 
     return <ContextRRP {...propsForComponent} />;

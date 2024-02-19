@@ -11,10 +11,12 @@ const useRouteViewerProps = function(props) {
 
         currentRoute,
         handleExport,
+        handleSaveProject,
         globalExits,
         isDevMode,
         isPreviewing,
         isProjectServer,
+        isSavingProject,
     } = props;
 
     const currentURL = location.pathname;
@@ -64,7 +66,7 @@ const useRouteViewerProps = function(props) {
             <button type='button' onClick={startEditing}>Edit Properties</button>
             {
                 isProjectServer
-                    ? <button type='button'>Save Project</button>
+                    ? <button type='button' onClick={handleSaveProject} disabled={isSavingProject}>{isSavingProject ? 'Saving...' : 'Save Project'}</button>
                     : <button type='button' onClick={handleExport}>Export Project JSON</button>
             }
             <button type='button' onClick={resetProject}>Reset</button>
