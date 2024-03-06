@@ -75,12 +75,15 @@ const useRouteViewerProps = function(props) {
 
     const DevModeFormControls = () => (
         <div id="controls">
+            {
+                routeFound && <button type='button' onClick={startPreviewing}>Preview Code</button>
+            }
             <button onClick={startEditing}>Edit Form</button>
         </div>
     );
 
     const bucketedExits = [
-        ...currentRoute.exits,
+        ...(currentRoute?.exits ?? []),
         ...globalExits
     ].reduce((collector, exit) => {
         const exitLocations = exit && exit.routeLocations && exit.routeLocations.length ? exit.routeLocations : ['general'];
@@ -94,7 +97,7 @@ const useRouteViewerProps = function(props) {
         return collector;
     }, {});
 
-    const bucketedForms = currentRoute.forms.reduce((collector, form) => {
+    const bucketedForms = (currentRoute?.forms ?? []).reduce((collector, form) => {
         const formLocations = form.action && form.action.exit && form.action.exit.routeLocations && form.action.exit.routeLocations.length ? form.action.exit.routeLocations : ['general']
         formLocations.forEach((loc) => {
             const fixedLoc = loc.length > 0 ? loc : 'general';

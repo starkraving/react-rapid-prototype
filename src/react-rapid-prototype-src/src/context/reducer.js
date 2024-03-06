@@ -4,6 +4,7 @@ import {
     SAVE_ROUTE,
     SET_CURRENT_FORM,
     SET_CURRENT_ROUTE,
+    SET_CURRENT_PREVIEW,
     SET_LINK_LOCATIONS,
     SET_PROJECT,
     TOGGLE_IS_EDITING,
@@ -18,6 +19,7 @@ export const initialState = {
     linkLocations: defaultLocations,
     currentRoute: undefined,
     currentFormIndex: undefined,
+    currentPreview: {file: undefined, route: undefined, form: undefined},
     isEditing: false,
     isUpdated: false,
     isPreviewing: false,
@@ -56,6 +58,11 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 currentFormIndex: action.payload,
             };
+        case SET_CURRENT_PREVIEW :
+            return {
+                ...state,
+                currentPreview: action.payload,
+            }
         case TOGGLE_IS_EDITING :
             return {
                 ...state,
@@ -70,6 +77,9 @@ const appReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isPreviewing: action.payload,
+                currentPreview: action.payload
+                    ? {file: null, route: state.currentRoute, form: state.currentFormIndex}
+                    : undefined,
             };
         case TOGGLE_IS_PROJECTSERVER :
             return {

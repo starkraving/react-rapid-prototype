@@ -3,6 +3,7 @@ export const RESET_PROJECT = 'RESET_PROJECT';
 export const SET_LINK_LOCATIONS = 'SET_LINK_LOCATIONS';
 export const SET_CURRENT_ROUTE = 'SET_CURRENT_ROUTE';
 export const SET_CURRENT_FORM = 'SET_CURRENT_FORM';
+export const SET_CURRENT_PREVIEW = 'SET_CURRENT_PREVIEW';
 export const TOGGLE_IS_EDITING = 'TOGGLE_IS_EDITING';
 export const TOGGLE_IS_UPDATED = 'TOGGLE_IS_UPDATED';
 export const TOGGLE_IS_PREVIEWING = 'TOGGLE_IS_PREVIEWING';
@@ -32,6 +33,11 @@ export const setCurrentRoute = (route) => ({
 export const setCurrentForm = (form) => ({
     type: SET_CURRENT_FORM,
     payload: form
+});
+
+export const setCurrentPreview = (preview) => ({
+    type: SET_CURRENT_PREVIEW,
+    payload: preview
 });
 
 export const toggleIsEditing = (isEditing) => ({

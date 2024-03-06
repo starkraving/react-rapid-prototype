@@ -1,0 +1,21 @@
+.code_preview {
+    .tree {
+        display: inline-block;
+        vertical-align: top;
+        width: 300px;
+        margin: 10px 0;
+    }
+
+    code {
+        display: inline-block;
+        box-sizing: border-box;
+        width: calc(100% - 320px);
+        padding: 10px;
+            overflow: scroll;
+            position: relative;
+
+        pre {
+            width: 100%;
+        }
+    }
+}

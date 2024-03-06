@@ -27,12 +27,23 @@ export const convertComponentHtmlToJsx = (str, startingIndent) => {
     const newDiv = div.querySelector('[data-content-start]');
     if (newDiv) {
         newDiv.removeAttribute('data-content-start');
+
+        // replace anchor tags with React Link tags
         const replaceableAnchors = newDiv.querySelectorAll('[data-content-exit]');
         for (let a = 0 ; a < replaceableAnchors.length ; a++) {
             let anchorNode = replaceableAnchors[a];
             let textNode = document.createTextNode(`<Link to="${anchorNode.getAttribute('href')}">${anchorNode.innerHTML}</Link>`);
             anchorNode.replaceWith(textNode);
         }
+
+        // replace forms with React form component
+        const replaceableForms = newDiv.querySelectorAll('[data-content-form]');
+        for (let f = 0 ; f < replaceableForms.length ; f++) {
+            let formNode = replaceableForms[f];
+            let textNode = document.createTextNode(`<Form${f+1} data-content-form="${formNode.getAttribute('data-content-form')}" />`);
+            formNode.replaceWith(textNode);
+        }
+
         div.innerHTML = newDiv.outerHTML;
     }
 
@@ -42,8 +53,8 @@ export const convertComponentHtmlToJsx = (str, startingIndent) => {
         .replace(/(&gt;)/g, '>');
 };
 
-export const locationToComponentStrings = (location) => {
-    let componentName = location.pathname
+export const locationToComponentStrings = (locationStr) => {
+    let componentName = locationStr
         .replace('/', '').replace(/:/g, '')
         .split('/').map((part) => part.substring(0,1).toUpperCase() + part.substring(1).toLowerCase())
         .join('');
@@ -52,7 +63,7 @@ export const locationToComponentStrings = (location) => {
     }
     componentName += 'Page';
 
-    const _componentPathVariables = location.pathname
+    const _componentPathVariables = locationStr
         .split('/')
         .filter((part) => part.indexOf(':') === 0)
         .map((part) => part.substring(1));
@@ -72,15 +83,17 @@ export const locationToComponentStrings = (location) => {
 
 export const currentRouteToComponentStrings = (currentRoute) => {
     let needsHistory = false;
-    const componentFormHandlers = currentRoute.forms && currentRoute.forms.length
+    let importForms = [];
+    const componentFormHandlers = currentRoute.forms && currentRoute.forms.length > 0
             ? currentRoute.forms.reduce(
                 (str, form, idx) => {
+                    importForms.push(`import Form${idx+1} from './Form${idx+1}'`);
                     const {
                         name,
                         exit = {route: ''}
                     } = form.action;
                     const handler = name || `handleForm${idx}`;
-                    str += `  const ${handler} = () => {`
+                    str += `  const ${handler} = (formData) => {`
                         + "\n    // TODO: do the thing";
                     if (exit.route && exit.route.length) {
                         needsHistory = true;
@@ -96,11 +109,13 @@ export const currentRouteToComponentStrings = (currentRoute) => {
               )
             : '';
     
+    const importFormsString = importForms.length ? importForms.join("\n") : '';
     const importHistoryString = needsHistory ? `import { useHistory } from 'react-router-dom';` : '';
     const useHistoryString = needsHistory ? `  const history = useHistory();${ "\n\n"}` : '';
 
     return {
         componentFormHandlers,
+        importFormsString,
         importHistoryString,
         useHistoryString
     };
@@ -116,6 +131,7 @@ export const generateComponentCode = (str, location, currentRoute) => {
 
     const {
         componentFormHandlers,
+        importFormsString,
         importHistoryString,
         useHistoryString
     } = currentRouteToComponentStrings(currentRoute);
@@ -124,6 +140,7 @@ export const generateComponentCode = (str, location, currentRoute) => {
 
     return `
 import 'React' from react;
+${importFormsString}
 ${importHistoryString}
 
 const ${componentName} = (props) => {
