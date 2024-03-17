@@ -92,10 +92,15 @@ const useRouteViewerProps = function(props) {
     const DevModeFormControls = () => (
         <div id="controls">
             <h2>React Rapid Prototyper</h2>
-            {
-                routeFound && <button type='button' onClick={startPreviewing}><i className="fa-solid fa-code"></i>Preview Code</button>
-            }
-            <button onClick={startEditing}>Edit Form</button>
+            <section>
+                <h3><i className='fa-solid fa-eye'></i>Modes</h3>
+                {
+                    routeFound && <button type='button' onClick={startPreviewing}><i className="fa-solid fa-code"></i>Preview Code</button>
+                }
+                <button type='button' onClick={startEditing}>
+                    <i className="fa-solid fa-sliders"></i>Edit Properties
+                </button>
+            </section>
         </div>
     );
 
