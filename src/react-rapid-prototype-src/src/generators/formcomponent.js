@@ -43,9 +43,9 @@ export const convertComponentHtmlToJsx = (str, startingIndent, currentFormIndex)
         .replace(/(&gt;)/g, '>');
 };
 
-export const generateFormComponentCode = (str, currentFormIndex) => {
+export const generateFormComponentCode = (str, currentFormIndex, formProps) => {
     const renderString = convertComponentHtmlToJsx(str, 2, currentFormIndex);
-    const componentName = `Form${currentFormIndex+1}`;
+    const componentName = formProps?.filename ?? `Form${currentFormIndex+1}`;
 
     return `
 import 'React' from react;

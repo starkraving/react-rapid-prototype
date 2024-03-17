@@ -1,21 +1,59 @@
 .code_preview {
-    .tree {
-        display: inline-block;
-        vertical-align: top;
-        width: 300px;
-        margin: 10px 0;
+    margin-left: 20px;
+
+    &, & * {
+        box-sizing: border-box;
     }
 
     code {
         display: inline-block;
-        box-sizing: border-box;
-        width: calc(100% - 320px);
+        width: 100%;
         padding: 10px;
-            overflow: scroll;
-            position: relative;
+        overflow: scroll;
+        position: relative;
 
         pre {
             width: 100%;
+        }
+    }
+}
+
+#controls {
+    .tree {
+        height: calc(100vh - 350px);
+        overflow-y: scroll;
+        scrollbar-width: none;
+        margin-top: 8px;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            padding-left: 12px;
+            list-style-type: none;
+            text-indent: 0;
+
+            > li:first-child {
+                margin-top: 0;
+            }
+
+            li {
+                margin-top: 8px;
+                padding: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                
+                button {
+                    text-overflow: ellipsis;
+                    padding: 4px;
+                }
+            }
+
+            ul {
+                margin-left: 6px;
+                margin-top: 8px;
+                padding-left: 18px;
+                border-left: 2px solid #414141;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useContextRRP } from '../../context/store';
 import { saveRoute, toggleIsEditing } from '../../context/actions';
 import './styles.scss';
+import { componentNameFromRoute } from '../../generators/libs';
 
 class RouteEditor extends React.Component
 {
@@ -17,6 +18,7 @@ class RouteEditor extends React.Component
         };
         this.setMinimumFields = this.setMinimumFields.bind(this);
         this.handleDescription = this.handleDescription.bind(this);
+        this.handleFilename = this.handleFilename.bind(this);
         this.handleFormAction = this.handleFormAction.bind(this);
         this.handleRouteForm = this.handleRouteForm.bind(this);
         this.handleRouteExit = this.handleRouteExit.bind(this);
@@ -27,6 +29,7 @@ class RouteEditor extends React.Component
     }
 
     static emptyForm = {
+        filename: '',
         action: {
             name: '',
             description: '',
@@ -58,6 +61,7 @@ class RouteEditor extends React.Component
                 : JSON.parse(JSON.stringify(currentRoute.forms[currentFormIndex]));
         const routeProps = (typeof currentRoute === 'undefined')
                 ? {
+                    filename: '',
                     description: '',
                     exits: [],
                     forms: [],
@@ -68,6 +72,19 @@ class RouteEditor extends React.Component
             formProps,
             routeProps,
         }, this.setMinimumFields);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {currentRoute: prevRoute} = prevProps;
+        const {currentRoute} = this.props;
+        if (
+            (typeof prevRoute === 'undefined' && typeof currentRoute != 'undefined')
+                || (JSON.stringify(prevRoute) !== JSON.stringify(currentRoute))
+        ) {
+            this.setState({
+                routeProps: JSON.parse(JSON.stringify(currentRoute))
+            });
+        }
     }
 
     setMinimumFields() {
@@ -120,12 +137,31 @@ class RouteEditor extends React.Component
         }});
     };
 
+    handleFilename(e) {
+        const {routeProps, formProps} = this.state;
+        if (typeof currentFormIndex === 'undefined') {
+            this.setState({routeProps: {
+                ...routeProps,
+                filename: e.target.value
+            }});
+        } else {
+            this.setState({formProps: {
+                ...formProps,
+                filename: e.target.value
+            }});
+        }
+    }
+
     handleFormAction(e) {
         let {formProps} = this.state;
         const fieldName = e.target.name;
         const value = e.target.value;
 
         switch (fieldName) {
+            case 'filename' :
+                formProps.filename = value;
+                break;
+
             case 'name' :
             case 'description' :
                 formProps.action[fieldName] = value;
@@ -262,221 +298,250 @@ class RouteEditor extends React.Component
 
     render() {
         const {routeProps, routeForms, routeExits, formProps, formInputs} = this.state;
-        const {location, linkLocations, currentFormIndex} = this.props;
+        const {currentRoute, location, linkLocations, currentFormIndex} = this.props;
         const currentURL = location.pathname;
         const exitTypes = ['form', 'link', 'global'];
         const inputTypes = ['textarea', 'text', 'email', 'number', 'range', 'url', 'password', 'select', 'radio', 'checkbox', 'file', 'button'];
+        const filename = (currentRoute && currentRoute.hasOwnProperty('filename')) ? currentRoute.filename : componentNameFromRoute(currentURL);
         return (
-            <section>
-                {
-                    typeof currentFormIndex === 'undefined' && <form onSubmit={this.saveRouteChanges}>
-                        <h1>Current URL: {currentURL}</h1>
-                        <div>
-                            <textarea id='description' value={routeProps.description} onChange={this.handleDescription}></textarea>
-                            <aside>
-                                <p>
-                                    Use the textarea to give this route some descriptive text which will be readable when the user navigates
-                                    through the project. For example, "Displays a grid of product summaries, each with images, product name and price.
-                                </p>
-                                <p>
-                                    For forms, specify the visible button text, eg "Add to Cart", and the action. The action is the component
-                                    method that should be invoked when the button is clicked, eg "addToCart".
-                                </p>
-                                <p>
-                                    For exits, specify the visible link text, eg "More Info", and the route the link should go to. The route should
-                                    start with a "/", and can include route parameters, eg "/products/:productId". Use an exit type of "Global" if
-                                    you want the link to be visible on all pages of the app, not just the current one -- for example, site-wide
-                                    navigation.
-                                </p>
-                            </aside>
-                        </div>
-                        <h3>Forms</h3>
-                        {
-                            routeForms.map((form, fIdx) => (
-                                <div className='route-props' key={`form_${fIdx}`}>
+            <>
+                <div id="controls">
+                    <h2>React Rapid Prototyper</h2>
+                    <section>
+                        <h3><i className='fa-solid fa-eye'></i>Modes</h3>
+                        <button type='button' disabled>
+                            <i className="fa-solid fa-sliders"></i>Edit Properties
+                        </button>
+                        <button onClick={this.handleCancel}>
+                            <i className="fa-solid fa-window-maximize"></i>Development Mode
+                        </button>
+                    </section>
+                </div>
+                <section>
+                    {
+                        typeof currentFormIndex === 'undefined' && <form onSubmit={this.saveRouteChanges}>
+                            <h1>Current URL: {currentURL}</h1>
+                            <div style={{marginBottom: '10px'}}>
+                                <label htmlFor="filename" style={{marginRight: '6px'}}>Filename:</label>
+                                <input type="text" name="filename" style={{width: '542px'}} defaultValue={filename} onChange={this.handleFilename} />
+                                </div>
+                            <div>
+                                <textarea id='description' value={routeProps.description} onChange={this.handleDescription}></textarea>
+                                <aside>
+                                    <p>
+                                        Use the filename input to customize the filename used when generating the code for this page
+                                    </p>
+                                    <p>
+                                        Use the textarea to give this route some descriptive text which will be readable when the user navigates
+                                        through the project. For example, "Displays a grid of product summaries, each with images, product name and price.
+                                    </p>
+                                    <p>
+                                        For forms, specify the visible button text, eg "Add to Cart", and the action. The action is the component
+                                        method that should be invoked when the button is clicked, eg "addToCart".
+                                    </p>
+                                    <p>
+                                        For exits, specify the visible link text, eg "More Info", and the route the link should go to. The route should
+                                        start with a "/", and can include route parameters, eg "/products/:productId". Use an exit type of "Global" if
+                                        you want the link to be visible on all pages of the app, not just the current one -- for example, site-wide
+                                        navigation.
+                                    </p>
+                                </aside>
+                            </div>
+                            <h3>Forms</h3>
+                            {
+                                routeForms.map((form, fIdx) => (
+                                    <div className='route-props' key={`form_${fIdx}`}>
+                                        <label className='route-prop'>
+                                            Exit Type:
+                                            <select name='exitType' value={form.type} onChange={this.handleRouteForm(fIdx)}>
+                                                {
+                                                    exitTypes.map((type, i) => (
+                                                        <option key={`exittype_form_${fIdx}_${i}`} value={type}>{ type }</option>
+                                                    ))
+                                                }
+                                            </select>
+                                        </label>
+                                        <label className='route-prop'>
+                                            Button Text:
+                                            <input type='text' name='visibleText' value={form.action.button.label}
+                                                onChange={this.handleRouteForm(fIdx)}
+                                                required={form.action.name.length > 0}/>
+                                        </label>
+                                        <label className='route-prop'>
+                                            Action:
+                                            <input type='text' name='action' value={form.action.name}
+                                                onChange={this.handleRouteForm(fIdx)}
+                                                required={form.action.button.label.length > 0}/>
+                                        </label>
+                                        &nbsp; &nbsp;
+                                        Prototype:
+                                        {
+                                            linkLocations.map((loc, lIdx) => {
+                                                return (
+                                                    <span style={{marginRight: '1em'}} key={`formlocation_${fIdx}_${lIdx}`}>
+                                                        <label className='prototype'>
+                                                            <input type='checkbox' name='prototype'
+                                                                value={loc} 
+                                                                checked={form.action.exit.routeLocations.indexOf(loc) > -1}
+                                                                onChange={this.handleRouteForm(fIdx)}
+                                                                disabled={fIdx === routeProps.forms.length}
+                                                                required={form.action.exit.routeLocations.length === 0}/>
+                                                            {loc}
+                                                        </label>
+                                                    </span>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                ))
+                            }
+                            <h3>Exits</h3>
+                            {
+                                routeExits.map((exit, idx) => (
+                                <div className='route-props' key={`exit_${idx}`}>
                                     <label className='route-prop'>
                                         Exit Type:
-                                        <select name='exitType' value={form.type} onChange={this.handleRouteForm(fIdx)}>
+                                        <select name='exitType' value={exit.type} onChange={this.handleRouteExit(idx)}>
                                             {
                                                 exitTypes.map((type, i) => (
-                                                    <option key={`exittype_form_${fIdx}_${i}`} value={type}>{ type }</option>
+                                                    <option key={`exittype_exit_${idx}_${i}`} value={type}>{ type }</option>
                                                 ))
                                             }
                                         </select>
                                     </label>
                                     <label className='route-prop'>
-                                        Button Text:
-                                        <input type='text' name='visibleText' value={form.action.button.label}
-                                            onChange={this.handleRouteForm(fIdx)}
-                                            required={form.action.name.length > 0}/>
+                                        Link Text:
+                                        <input type='text' name='visibleText' value={exit.visibleText} 
+                                            onChange={this.handleRouteExit(idx)}
+                                            required={exit.route.length > 0}/>
                                     </label>
                                     <label className='route-prop'>
-                                        Action:
-                                        <input type='text' name='action' value={form.action.name}
-                                            onChange={this.handleRouteForm(fIdx)}
-                                            required={form.action.button.label.length > 0}/>
+                                        Route:
+                                        <input type='text' name='route' value={exit.route} 
+                                            onChange={this.handleRouteExit(idx)}
+                                            required={exit.visibleText.length > 0}/>
                                     </label>
                                     &nbsp; &nbsp;
                                     Prototype:
                                     {
                                         linkLocations.map((loc, lIdx) => {
                                             return (
-                                                <span style={{marginRight: '1em'}} key={`formlocation_${fIdx}_${lIdx}`}>
+                                                <span key={`loc_${idx}_${lIdx}`} style={{marginRight: '1em'}}>
                                                     <label className='prototype'>
                                                         <input type='checkbox' name='prototype'
-                                                            value={loc} 
-                                                            checked={form.action.exit.routeLocations.indexOf(loc) > -1}
-                                                            onChange={this.handleRouteForm(fIdx)}
-                                                            disabled={fIdx === routeProps.forms.length}
-                                                            required={form.action.exit.routeLocations.length === 0}/>
+                                                            value={loc}
+                                                            checked={exit.routeLocations.indexOf(loc) > -1}
+                                                            onChange={this.handleRouteExit(idx)}
+                                                            disabled={idx === routeProps.exits.length}/>
                                                         {loc}
                                                     </label>
                                                 </span>
-                                            )
+                                            );
                                         })
                                     }
                                 </div>
-                            ))
-                        }
-                        <h3>Exits</h3>
-                        {
-                            routeExits.map((exit, idx) => (
-                            <div className='route-props' key={`exit_${idx}`}>
-                                <label className='route-prop'>
-                                    Exit Type:
-                                    <select name='exitType' value={exit.type} onChange={this.handleRouteExit(idx)}>
-                                        {
-                                            exitTypes.map((type, i) => (
-                                                <option key={`exittype_exit_${idx}_${i}`} value={type}>{ type }</option>
-                                            ))
-                                        }
-                                    </select>
-                                </label>
-                                <label className='route-prop'>
-                                    Link Text:
-                                    <input type='text' name='visibleText' value={exit.visibleText} 
-                                        onChange={this.handleRouteExit(idx)}
-                                        required={exit.route.length > 0}/>
-                                </label>
-                                <label className='route-prop'>
-                                    Route:
-                                    <input type='text' name='route' value={exit.route} 
-                                        onChange={this.handleRouteExit(idx)}
-                                        required={exit.visibleText.length > 0}/>
-                                </label>
-                                &nbsp; &nbsp;
-                                Prototype:
-                                {
-                                    linkLocations.map((loc, lIdx) => {
-                                        return (
-                                            <span key={`loc_${idx}_${lIdx}`} style={{marginRight: '1em'}}>
-                                                <label className='prototype'>
-                                                    <input type='checkbox' name='prototype'
-                                                        value={loc}
-                                                        checked={exit.routeLocations.indexOf(loc) > -1}
-                                                        onChange={this.handleRouteExit(idx)}
-                                                        disabled={idx === routeProps.exits.length}/>
-                                                    {loc}
-                                                </label>
-                                            </span>
-                                        );
-                                    })
-                                }
+                                ))
+                            }
+                            <button type='button' onClick={this.handleCancel}>Cancel</button>
+                            <button type='submit'>Save Changes</button>
+                        </form>
+                    }
+                    {
+                        typeof currentFormIndex !== 'undefined' && formProps && <form onSubmit={this.saveFormChanges}>
+                            <h1>Current url: { currentURL }</h1>
+                            <div style={{marginBottom: '10px'}}>
+                                <label htmlFor="filename" style={{marginRight: '6px'}}>Filename</label>
+                                <input type="text" name="filename" defaultValue={formProps?.filename?.length ? formProps.filename : `Form${currentFormIndex + 1}`} onChange={this.handleFormAction} style={{width: '542px'}} />
                             </div>
-                            ))
-                        }
-                        <button type='button' onClick={this.handleCancel}>Cancel</button>
-                        <button type='submit'>Save Changes</button>
-                    </form>
-                }
-                {
-                    typeof currentFormIndex !== 'undefined' && formProps && <form onSubmit={this.saveFormChanges}>
-                        <h1>Current url: { currentURL }</h1>
-                        <div>
-                            <label className='form-prop'>
-                                Action Name:
-                                <input type='text' name='name' value={formProps.action.name} required onChange={this.handleFormAction}/>
-                            </label>
-                        </div>
-                        <div>
-                            <label htmlFor='description'>Description: </label><br/>
-                            <textarea id='description' name='description' value={formProps.action.description}
-                                onChange={this.handleFormAction}></textarea>
-                            <aside>
-                                <p>
-                                    Use the textarea to explain to the viewer what will happen when the form button is pressed, eg "Sends a
-                                    request to the API server specifying the product and cart info".
-                                </p>
-                                <p>
-                                    The action name and button text are carried over from the route properties form, and can be changed here if
-                                    needed.
-                                </p>
-                                <p>
-                                    You can optionally specify a route to redirect to after the main action of the form is done. For example, a
-                                    form that signs the user up for a newsletter might redirect to a "thank-you" page afterwards. If you leave it
-                                    blank, the user will stay on the current page.
-                                </p>
-                                <p>
-                                    Use the form inputs to specify the form fields that will be visible on the page along with the submit button.
-                                    For inputs of type "select", "checkbox", or "radio", use a comma-separated list in the "Value" property to
-                                    generate a list of options or boxes -- one for each item. You can specify any other HTML attributes you want
-                                    for the input in the "Attributes" field, complete with quotes, eg <code>class="form-control" maxlength="256"</code>
-                                </p>
-                            </aside>
+                            <div>
+                                <label className='form-prop'>
+                                    Action Name:
+                                    <input type='text' name='name' value={formProps.action.name} required onChange={this.handleFormAction}/>
+                                </label>
+                            </div>
+                            <div>
+                                <label htmlFor='description'>Description: </label><br/>
+                                <textarea id='description' name='description' value={formProps.action.description}
+                                    onChange={this.handleFormAction}></textarea>
+                                <aside>
+                                    <p>
+                                        Use the filename input to customize the filename used when generating the code for this page
+                                    </p>
+                                    <p>
+                                        Use the textarea to explain to the viewer what will happen when the form button is pressed, eg "Sends a
+                                        request to the API server specifying the product and cart info".
+                                    </p>
+                                    <p>
+                                        The action name and button text are carried over from the route properties form, and can be changed here if
+                                        needed.
+                                    </p>
+                                    <p>
+                                        You can optionally specify a route to redirect to after the main action of the form is done. For example, a
+                                        form that signs the user up for a newsletter might redirect to a "thank-you" page afterwards. If you leave it
+                                        blank, the user will stay on the current page.
+                                    </p>
+                                    <p>
+                                        Use the form inputs to specify the form fields that will be visible on the page along with the submit button.
+                                        For inputs of type "select", "checkbox", or "radio", use a comma-separated list in the "Value" property to
+                                        generate a list of options or boxes -- one for each item. You can specify any other HTML attributes you want
+                                        for the input in the "Attributes" field, complete with quotes, eg <code>class="form-control" maxlength="256"</code>
+                                    </p>
+                                </aside>
 
-                        </div>
-                        <div>
-                            <label className='form-prop'>
-                                Button Text:
-                                <input type='text' name='button' value={formProps.action.button.label}
-                                    onChange={this.handleFormAction}/>
-                            </label>
-                        </div>
-                        <div>
-                            <label className='form-prop'>
-                                Redirect to:
-                                <input type='text' name='exit' value={formProps.action.exit.route || ''}
-                                    onChange={this.handleFormAction}/>
-                            </label>
-                        </div>
-                        <h3>Form Inputs</h3>
-                        {
-                            formInputs.map((input, ff) => (<div className='input-props' key={`ff_${ff}`}>
-                                <label className='input-prop'>
-                                    Input type:
-                                    <select name='type' value={input.type} onChange={this.handleFormInput(ff)}>
-                                        {
-                                            inputTypes.map((type, i) => (
-                                                <option key={`type_${ff}_${i}`} value={type}>{ type }</option>
-                                            ))
-                                        }
-                                        
-                                    </select>
+                            </div>
+                            <div>
+                                <label className='form-prop'>
+                                    Button Text:
+                                    <input type='text' name='button' value={formProps.action.button.label}
+                                        onChange={this.handleFormAction}/>
                                 </label>
-                                <label className='input-prop'>
-                                    Label Text:
-                                    <input type='text' name='label' value={input.label}
-                                        onChange={this.handleFormInput(ff)}
-                                        required={ff < formInputs.length - 1}/>
+                            </div>
+                            <div>
+                                <label className='form-prop'>
+                                    Redirect to:
+                                    <input type='text' name='exit' value={formProps.action.exit.route || ''}
+                                        onChange={this.handleFormAction}/>
                                 </label>
-                                <label className='input-prop'>
-                                    Value:
-                                    <input type='text' name='value' value={input.value}
-                                        onChange={this.handleFormInput(ff)}/>
-                                </label>
-                                <label className='input-prop'>
-                                    Attributes:
-                                    <input type='text' name='attributes' value={input.attributes}
-                                        onChange={this.handleFormInput(ff)}/>
-                                </label>
-                            </div>))
-                        }
+                            </div>
+                            <h3>Form Inputs</h3>
+                            {
+                                formInputs.map((input, ff) => (<div className='input-props' key={`ff_${ff}`}>
+                                    <label className='input-prop'>
+                                        Input type:
+                                        <select name='type' value={input.type} onChange={this.handleFormInput(ff)}>
+                                            {
+                                                inputTypes.map((type, i) => (
+                                                    <option key={`type_${ff}_${i}`} value={type}>{ type }</option>
+                                                ))
+                                            }
+                                            
+                                        </select>
+                                    </label>
+                                    <label className='input-prop'>
+                                        Label Text:
+                                        <input type='text' name='label' value={input.label}
+                                            onChange={this.handleFormInput(ff)}
+                                            required={ff < formInputs.length - 1}/>
+                                    </label>
+                                    <label className='input-prop'>
+                                        Value:
+                                        <input type='text' name='value' value={input.value}
+                                            onChange={this.handleFormInput(ff)}/>
+                                    </label>
+                                    <label className='input-prop'>
+                                        Attributes:
+                                        <input type='text' name='attributes' value={input.attributes}
+                                            onChange={this.handleFormInput(ff)}/>
+                                    </label>
+                                </div>))
+                            }
 
-                        <button type='button' onClick={this.handleCancel}>Cancel</button>
-                        <button type='submit'>Save Changes</button>
-                    </form>
-                }
-            </section>
+                            <button type='button' onClick={this.handleCancel}>Cancel</button>
+                            <button type='submit'>Save Changes</button>
+                        </form>
+                    }
+                </section>
+            </>
         );
     }
 

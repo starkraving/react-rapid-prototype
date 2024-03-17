@@ -1,3 +1,5 @@
+import { componentNameFromRouteProps } from "./libs";
+
 export const convertComponentHtmlToJsx = (str, startingIndent) => {
 
     const format = (node, level) => {
@@ -124,11 +126,11 @@ export const currentRouteToComponentStrings = (currentRoute) => {
 
 export const generateComponentCode = (str, location, currentRoute) => {
     const {
-        componentName,
         componentPathVariables
     } = locationToComponentStrings(location);
-    
 
+    const componentName = componentNameFromRouteProps(currentRoute);
+    
     const {
         componentFormHandlers,
         importFormsString,

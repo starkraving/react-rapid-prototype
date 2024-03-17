@@ -1,6 +1,6 @@
 {
   "name": "react-rapid-prototype",
-  "version": "0.3.06",
+  "version": "0.3.07",
   "description": "Rapid scoping, prototyping and scaffolding of a React app",
   "src": "src/index.jsx",
   "main": "dist/index.js",

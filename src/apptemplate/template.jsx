@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from './Logo';
 import './styles.scss';
-import {useRouteViewerProps} from 'react-rapid-prototype';
+import {useRouteViewerProps} from '../react-rapid-prototype-src/src';
 import { Link, NavLink } from 'react-router-dom';
 
 const AppTemplate = (props) => {

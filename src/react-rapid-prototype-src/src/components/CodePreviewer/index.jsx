@@ -7,19 +7,8 @@ import { generateTemplateCode } from '../../generators/templatecomponent';
 import { generateAppCode } from '../../generators/appcomponent';
 import { generateIndexCode } from '../../generators/indexcomponent';
 import './styles.scss';
+import { componentNameFromRouteProps } from '../../generators/libs';
 
-const componentName = (route) => {
-    let componentName = route
-        .replace('/', '').replace(/:/g, '')
-        .split('/').map((part) => part.substring(0,1).toUpperCase() + part.substring(1).toLowerCase())
-        .join('');
-    if (!componentName.length) {
-        componentName = 'Home';
-    }
-    componentName += 'Page';
-
-    return componentName;
-}
 
 const CodePreviewer = (props) => {
     const {
@@ -53,7 +42,7 @@ const CodePreviewer = (props) => {
             componentCode = generateIndexCode();
             break;
         case !isNaN(currentFormIndex) :
-            componentCode = generateFormComponentCode(ReactDomServer.renderToStaticMarkup(<StaticRouter>{children}</StaticRouter>), currentFormIndex);
+            componentCode = generateFormComponentCode(ReactDomServer.renderToStaticMarkup(<StaticRouter>{children}</StaticRouter>), currentFormIndex, currentRoute.forms[currentFormIndex]);
             break;
         default :
             componentCode = generateComponentCode(ReactDomServer.renderToStaticMarkup(<StaticRouter>{children}</StaticRouter>), currentRoute.route, currentRoute);
@@ -63,51 +52,64 @@ const CodePreviewer = (props) => {
         dispatchSetCurrentPreview({file, route, form});
     };
 
-    return <div className="code_preview">
-        <div className="tree">
-            <h2>Code Previewer</h2>
-            <ul>
-                <li className="folder">
-                    Pages
+    return <>
+        <div id="controls">
+            <h2>React Rapid Prototyper</h2>
+            <section>
+                <h3><i className='fa-solid fa-eye'></i>Modes</h3>
+                <button type='button' disabled>
+                    <i className="fa-solid fa-code"></i>Preview Code
+                </button>
+                <button onClick={toggleIsPreviewing}>
+                    <i className="fa-solid fa-window-maximize"></i>Development Mode
+                </button>
+            </section>
+            <section>
+                <h3><i className="fa-solid fa-folder"></i>Project Structure</h3>
+                <div className="tree">
                     <ul>
-                        {
-                            project.routes.map((objRoute, routeIndex) => (
-                                <li className="folder" key={`route_${routeIndex}`}>
-                                    {componentName(objRoute.route)}
-                                    <ul>
-                                        <li><button onClick={handleDirectoryTreeClick(undefined, objRoute, undefined)}>index.jsx</button></li>
-                                        {
-                                            objRoute.forms.map((_, formIndex) => (
-                                                <li key={`form_${formIndex}`}>
-                                                    <button onClick={handleDirectoryTreeClick(undefined, objRoute, formIndex)}>{`Form${formIndex+1}`}.jsx</button>
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
-                                </li>
-                            ))
-                        }
+                        <li>
+                            <i className="fa-solid fa-folder"></i>pages
+                            <ul>
+                                {
+                                    project.routes.map((objRoute, routeIndex) => (
+                                        <li className="folder" key={`route_${routeIndex}`}>
+                                            <span title={componentNameFromRouteProps(objRoute)}><i className="fa-solid fa-folder"></i>{componentNameFromRouteProps(objRoute)}</span>
+                                            <ul>
+                                                <li><button onClick={handleDirectoryTreeClick(undefined, objRoute, undefined)} title='index.jsx' disabled={objRoute && currentRoute && objRoute.route === currentRoute.route && isNaN(currentFormIndex)}>index.jsx</button></li>
+                                                {
+                                                    objRoute.forms.map((formProps, formIndex) => (
+                                                        <li key={`form_${formIndex}`} title={(formProps?.filename ?? `Form${formIndex+1}`) + '.jsx'}>
+                                                            <button onClick={handleDirectoryTreeClick(undefined, objRoute, formIndex)} disabled={objRoute && currentRoute && objRoute.route === currentRoute.route && !isNaN(currentFormIndex)}>{formProps?.filename ?? `Form${formIndex+1}`}.jsx</button>
+                                                        </li>
+                                                    ))
+                                                }
+                                            </ul>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            <i className="fa-solid fa-folder"></i>template
+                            <ul>
+                                <li><button onClick={handleDirectoryTreeClick('template/index.jsx', undefined, undefined)} title='index.js' disabled={file === 'template/index.jsx'}>index.jsx</button></li>
+                            </ul>
+                        </li>
+                        <li><button onClick={handleDirectoryTreeClick('App.jsx', undefined, undefined)} title='App.jsx' disabled={file === 'App.jsx'}>App.jsx</button></li>
+                        <li><button onClick={handleDirectoryTreeClick('index.js', undefined, undefined)} title='index.js'>index.js</button></li>
                     </ul>
-                </li>
-                <li className="folder">
-                    Template
-                    <ul>
-                        <li><button onClick={handleDirectoryTreeClick('template/index.jsx', undefined, undefined)}>index.jsx</button></li>
-                    </ul>
-                </li>
-                <li><button onClick={handleDirectoryTreeClick('App.jsx', undefined, undefined)}>App.jsx</button></li>
-                <li><button onClick={handleDirectoryTreeClick('index.js', undefined, undefined)}>index.js</button></li>
-            </ul>
+                </div>
+            </section>
         </div>
-        <code>
-            <pre>
-                {componentCode}
-            </pre>
-        </code>
-        <div id='controls'>
-            <button onClick={toggleIsPreviewing}>Back</button>
+        <div className="code_preview">
+            <code>
+                <pre>
+                    {componentCode}
+                </pre>
+            </code>
         </div>
-    </div>
+    </>
 };
 
 export default CodePreviewer
