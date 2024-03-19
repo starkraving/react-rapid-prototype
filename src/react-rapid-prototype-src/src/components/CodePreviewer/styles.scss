@@ -1,13 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+
 .code_preview {
-    margin-left: 20px;
+    padding-left: 20px;
+    padding-top: 42px;
+    background-color: #000;
+    color: #fff;
 
     &, & * {
         box-sizing: border-box;
     }
 
+    h2 {
+        margin: 0 0 23px;
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 20px;
+        line-height: 1em;
+        font-weight: 600;
+    }
+
     code {
         display: inline-block;
         width: 100%;
+        min-height: 100vh;
         padding: 10px;
         overflow: scroll;
         position: relative;

@@ -1,7 +1,7 @@
 import { componentNameFromRouteProps } from "./libs";
 
 export const generateAppCode = (project) => {
-    const importString = `import 'React' from react;
+    const importString = `import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Template from './Template';
 ` + project.routes.map((objRoute) => `import ${componentNameFromRouteProps(objRoute)} from './Pages/${componentNameFromRouteProps(objRoute)}';

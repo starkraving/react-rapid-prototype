@@ -1,6 +1,8 @@
 import { componentNameFromRouteProps } from "./libs";
 
-export const convertComponentHtmlToJsx = (str, startingIndent) => {
+const formNameFromProps = (formProps, currentFormIndex) => formProps?.filename ?? `Form${currentFormIndex+1}`;
+
+const convertComponentHtmlToJsx = (str, startingIndent, currentRoute) => {
 
     const format = (node, level) => {
 
@@ -41,8 +43,9 @@ export const convertComponentHtmlToJsx = (str, startingIndent) => {
         // replace forms with React form component
         const replaceableForms = newDiv.querySelectorAll('[data-content-form]');
         for (let f = 0 ; f < replaceableForms.length ; f++) {
+            const formFilename = formNameFromProps(currentRoute.forms[f], f);
             let formNode = replaceableForms[f];
-            let textNode = document.createTextNode(`<Form${f+1} data-content-form="${formNode.getAttribute('data-content-form')}" />`);
+            let textNode = document.createTextNode(`<${formFilename} data-content-form="${formNode.getAttribute('data-content-form')}" />`);
             formNode.replaceWith(textNode);
         }
 
@@ -55,7 +58,7 @@ export const convertComponentHtmlToJsx = (str, startingIndent) => {
         .replace(/(&gt;)/g, '>');
 };
 
-export const locationToComponentStrings = (locationStr) => {
+const locationToComponentStrings = (locationStr) => {
     let componentName = locationStr
         .replace('/', '').replace(/:/g, '')
         .split('/').map((part) => part.substring(0,1).toUpperCase() + part.substring(1).toLowerCase())
@@ -83,13 +86,14 @@ export const locationToComponentStrings = (locationStr) => {
     };
 };
 
-export const currentRouteToComponentStrings = (currentRoute) => {
+const currentRouteToComponentStrings = (currentRoute) => {
     let needsHistory = false;
     let importForms = [];
     const componentFormHandlers = currentRoute.forms && currentRoute.forms.length > 0
             ? currentRoute.forms.reduce(
                 (str, form, idx) => {
-                    importForms.push(`import Form${idx+1} from './Form${idx+1}'`);
+                    const formFilename = formNameFromProps(form, idx);
+                    importForms.push(`import ${formFilename} from './${formFilename}';`);
                     const {
                         name,
                         exit = {route: ''}
@@ -138,10 +142,10 @@ export const generateComponentCode = (str, location, currentRoute) => {
         useHistoryString
     } = currentRouteToComponentStrings(currentRoute);
 
-    const renderString = convertComponentHtmlToJsx(str, 2);
+    const renderString = convertComponentHtmlToJsx(str, 2, currentRoute);
 
     return `
-import 'React' from react;
+import React from 'react';
 ${importFormsString}
 ${importHistoryString}
 

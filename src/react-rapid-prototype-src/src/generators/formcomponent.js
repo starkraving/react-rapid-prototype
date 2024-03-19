@@ -48,7 +48,7 @@ export const generateFormComponentCode = (str, currentFormIndex, formProps) => {
     const componentName = formProps?.filename ?? `Form${currentFormIndex+1}`;
 
     return `
-import 'React' from react;
+import React from 'react';
 
 const ${componentName} = ({onSubmit}) => {
   const handleFormSubmit = (evt) => {

@@ -8,6 +8,7 @@ import { generateAppCode } from '../../generators/appcomponent';
 import { generateIndexCode } from '../../generators/indexcomponent';
 import './styles.scss';
 import { componentNameFromRouteProps } from '../../generators/libs';
+import SyntaxHighlighter from './SyntaxHighlighter';
 
 
 const CodePreviewer = (props) => {
@@ -103,11 +104,8 @@ const CodePreviewer = (props) => {
             </section>
         </div>
         <div className="code_preview">
-            <code>
-                <pre>
-                    {componentCode}
-                </pre>
-            </code>
+            <h2>Code Preview</h2>
+            <SyntaxHighlighter str={componentCode} />
         </div>
     </>
 };

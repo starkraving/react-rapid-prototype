@@ -48,7 +48,7 @@ export const generateTemplateCode = (str) => {
     const renderString = convertComponentHtmlToJsx(str, 2);
 
     return `
-import 'React' from react;
+import React from 'react';
 
 const Template = ({children}) => {
   return (
