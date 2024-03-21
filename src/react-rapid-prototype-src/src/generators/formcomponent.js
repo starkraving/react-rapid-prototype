@@ -46,10 +46,14 @@ export const convertComponentHtmlToJsx = (str, startingIndent, currentFormIndex)
 export const generateFormComponentCode = (str, currentFormIndex, formProps) => {
     const renderString = convertComponentHtmlToJsx(str, 2, currentFormIndex);
     const componentName = formProps?.filename ?? `Form${currentFormIndex+1}`;
+    const componentDescription = formProps?.action?.description ?? '';
 
     return `
 import React from 'react';
 
+/**
+ * ${componentDescription}
+ */
 const ${componentName} = ({onSubmit}) => {
   const handleFormSubmit = (evt) => {
     const formData = Object.fromEntries(new FormData(evt.target));

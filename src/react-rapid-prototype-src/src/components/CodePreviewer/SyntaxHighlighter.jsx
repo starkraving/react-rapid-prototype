@@ -11,7 +11,8 @@ import {
     tags,
     tagattributes,
     tagevents,
-    reactline
+    reactline,
+    multicommentline
 } from './patterns';
 
 const rules = [
@@ -26,7 +27,8 @@ const rules = [
     tags,
     tagattributes,
     tagevents,
-    reactline
+    reactline,
+    multicommentline
 ];
 
 const applyHighlighting = (str, row, iter = 0) => {

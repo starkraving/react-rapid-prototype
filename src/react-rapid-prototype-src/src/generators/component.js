@@ -115,12 +115,14 @@ const currentRouteToComponentStrings = (currentRoute) => {
               )
             : '';
     
+    const componentDescription = currentRoute.description.trim().replace(/[\r\n]/, ' ');
     const importFormsString = importForms.length ? importForms.join("\n") : '';
     const importHistoryString = needsHistory ? `import { useHistory } from 'react-router-dom';` : '';
     const useHistoryString = needsHistory ? `  const history = useHistory();${ "\n\n"}` : '';
 
     return {
         componentFormHandlers,
+        componentDescription,
         importFormsString,
         importHistoryString,
         useHistoryString
@@ -137,6 +139,7 @@ export const generateComponentCode = (str, location, currentRoute) => {
     
     const {
         componentFormHandlers,
+        componentDescription,
         importFormsString,
         importHistoryString,
         useHistoryString
@@ -149,6 +152,9 @@ import React from 'react';
 ${importFormsString}
 ${importHistoryString}
 
+/**
+ * ${componentDescription}
+ */
 const ${componentName} = (props) => {
 ${useHistoryString + componentPathVariables + componentFormHandlers}
 

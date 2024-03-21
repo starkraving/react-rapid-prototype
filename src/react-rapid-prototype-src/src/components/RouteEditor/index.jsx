@@ -317,10 +317,10 @@ class RouteEditor extends React.Component
                         </button>
                     </section>
                 </div>
-                <section>
+                <section id="properties">
                     {
                         typeof currentFormIndex === 'undefined' && <form onSubmit={this.saveRouteChanges}>
-                            <h1>Current URL: {currentURL}</h1>
+                            <h2>Current URL: {currentURL}</h2>
                             <div style={{marginBottom: '10px'}}>
                                 <label htmlFor="filename" style={{marginRight: '6px'}}>Filename:</label>
                                 <input type="text" name="filename" style={{width: '542px'}} defaultValue={filename} onChange={this.handleFilename} />
@@ -448,8 +448,8 @@ class RouteEditor extends React.Component
                     }
                     {
                         typeof currentFormIndex !== 'undefined' && formProps && <form onSubmit={this.saveFormChanges}>
-                            <h1>Current url: { currentURL }</h1>
-                            <div style={{marginBottom: '10px'}}>
+                            <h2>Current url: { currentURL }</h2>
+                            <div>
                                 <label htmlFor="filename" style={{marginRight: '6px'}}>Filename</label>
                                 <input type="text" name="filename" defaultValue={formProps?.filename?.length ? formProps.filename : `Form${currentFormIndex + 1}`} onChange={this.handleFormAction} style={{width: '542px'}} />
                             </div>

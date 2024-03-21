@@ -140,3 +140,11 @@ export const reactline = {
         g: '#da70d6'
     }
 };
+
+export const multicommentline = {
+    match: /^(?<a> *)(?<b>(\/\*\*|\*\/|(\* ([^\*]+))))$/g,
+    colors: {
+        a: '',
+        b: '#6a9955'
+    }
+};

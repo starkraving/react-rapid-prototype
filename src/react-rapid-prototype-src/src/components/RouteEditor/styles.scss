@@ -1,19 +1,97 @@
-section {
-    padding: 0 20px;
+#properties {
+    padding: 42px 0 0 30px;
+    background-color: #000;
+    color: #fff;
+    min-height: 100vh;
+
+    &, & * {
+      box-sizing: border-box;
+    }
+
+    h2 {
+        margin: 0 0 23px;
+    }
+
+    h2, h3 {
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 20px;
+        line-height: 1em;
+        font-weight: 600;
+    }
+
+    form {
+      margin: 0;
+    }
+
+    input:not([type=checkbox]), select {
+      margin-top: 5px;
+      width: 200px;
+      padding: 7px;
+      border-radius: 5px;
+      border: 0;
+    }
+
+    div {
+      margin-bottom: 10px;
+    }
+
+    div.route-props,
+    div.input-props {
+        margin-bottom: 20px;
+    }
+    
+    label.route-prop, label.input-prop {
+      display: inline-block;
+      width: 210px;
+      text-align: left;
+      padding-right: 10px;
+  
+      input[type=checkbox] {
+        accent-color: #8714DE;
+      }
+    }
+    
+    label.form-prop {
+      width: 620px;
+      text-align: right;
+    
+      input {
+        width: 450px;
+        margin-left: 10px;
+      }
+    }
+    
+    button {
+      border: 0;
+      padding: 10px;
+      border-radius: 19px;
+  
+      &[type=submit] {
+        background-color: #8714DE;
+        color: #fff;
+      }
+    }
+  
+    button + button {
+        margin-left: 10px;
+    }
+
 }
 #description {
     width: 620px;
     height: 200px;
+    border-radius: 5px;
+    border: 0;
+    padding: 7px;
   
     & + aside {
       display: block;
       position: relative;
       float: right;
+      top: -30px;
       width: 400px;
       font-weight: normal;
       font-size: 11px;
-      color: #333;
-      background-color: #fff;
       padding: 5px;
       font-family: Helvetica, Arial, sans-serif;
   
@@ -32,7 +110,7 @@ section {
       &:after {
         content: '?';
         font-weight: bold;
-        color: #ffcc00;
+        color: #c69fde;
         font-size: 25px;
         position: absolute;
         display: block;
@@ -43,35 +121,4 @@ section {
         left: -42px;
       }
     }
-  }
-
-  div.route-props,
-  div.input-props {
-      margin-bottom: 20px;
-  }
-  
-  label.route-prop, label.input-prop {
-    display: inline-block;
-    width: 210px;
-    text-align: left;
-    padding-right: 10px;
-  
-    input:not([type=checkbox]), select {
-      margin-top: 5px;
-      width: 200px;
-    }
-  }
-  
-  label.form-prop {
-    width: 620px;
-    text-align: right;
-  
-    input {
-      width: 450px;
-      margin-left: 10px;
-    }
-  }
-  
-  button + button {
-      margin-left: 10px;
   }
