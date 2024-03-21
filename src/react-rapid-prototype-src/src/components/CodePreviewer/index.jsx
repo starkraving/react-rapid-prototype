@@ -81,7 +81,7 @@ const CodePreviewer = (props) => {
                                                 {
                                                     objRoute.forms.map((formProps, formIndex) => (
                                                         <li key={`form_${formIndex}`} title={(formProps?.filename ?? `Form${formIndex+1}`) + '.jsx'}>
-                                                            <button onClick={handleDirectoryTreeClick(undefined, objRoute, formIndex)} disabled={objRoute && currentRoute && objRoute.route === currentRoute.route && !isNaN(currentFormIndex)}>{formProps?.filename ?? `Form${formIndex+1}`}.jsx</button>
+                                                            <button onClick={handleDirectoryTreeClick(undefined, objRoute, formIndex)} disabled={objRoute && currentRoute && objRoute.route === currentRoute.route && currentFormIndex === formIndex}>{formProps?.filename ?? `Form${formIndex+1}`}.jsx</button>
                                                         </li>
                                                     ))
                                                 }

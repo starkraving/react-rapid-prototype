@@ -127,3 +127,16 @@ export const tagevents = {
         f: ''
     }
 };
+
+export const reactline = {
+    match: /^(?<a> *)(?<b>[a-zA-Z0-9]+)(?<c>\.)(?<d>[a-zA-Z0-9]+)(?<e>\()(?<f>[^\)]*)(?<g>\)?)$/g,
+    colors: {
+        a: '',
+        b: '#52c1ff',
+        c: '',
+        d: '#dcdcaa',
+        e: '#da70d6',
+        f: '#ce9178',
+        g: '#da70d6'
+    }
+};

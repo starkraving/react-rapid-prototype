@@ -8,7 +8,7 @@ import Template from './Template';
 `).join('');
 
     const routesString = project.routes.map((objRoute) => `
-            <Route exact path='${objRoute.route}' component={${componentNameFromRouteProps(objRoute)}} />`).join('').trim();
+            <Route exact path="${objRoute.route}" component={${componentNameFromRouteProps(objRoute)}} />`).join('').trim();
 
     return `
 ${importString}
