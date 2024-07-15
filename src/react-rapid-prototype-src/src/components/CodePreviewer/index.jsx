@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactDomServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { generateComponentCode } from '../../generators/component';
@@ -9,6 +9,7 @@ import { generateIndexCode } from '../../generators/indexcomponent';
 import './styles.scss';
 import { componentNameFromRouteProps } from '../../generators/libs';
 import SyntaxHighlighter from './SyntaxHighlighter';
+import CodeExporter from '../CodeExporter';
 
 
 const CodePreviewer = (props) => {
@@ -30,6 +31,16 @@ const CodePreviewer = (props) => {
         form: currentFormIndex,
     } = currentPreview;
 
+    const modalRef = useRef(null);
+
+    const handleModalOpen = () => {
+        modalRef.current.open();
+    };
+    
+    const handleDirectoryTreeClick = (file, route, form) => () => {
+        dispatchSetCurrentPreview({file, route, form});
+    };
+
     let componentCode;
 
     switch(true) {
@@ -48,10 +59,6 @@ const CodePreviewer = (props) => {
         default :
             componentCode = generateComponentCode(ReactDomServer.renderToStaticMarkup(<StaticRouter>{children}</StaticRouter>), currentRoute.route, currentRoute);
     }
-    
-    const handleDirectoryTreeClick = (file, route, form) => () => {
-        dispatchSetCurrentPreview({file, route, form});
-    };
 
     return <>
         <div id="controls">
@@ -63,6 +70,12 @@ const CodePreviewer = (props) => {
                 </button>
                 <button onClick={toggleIsPreviewing}>
                     <i className="fa-solid fa-window-maximize"></i>Development Mode
+                </button>
+            </section>
+            <section>
+                <h3><i className='fa-solid fa-bolt'></i>Actions</h3>
+                <button type='button' onClick={handleModalOpen}>
+                    <i className="fa-solid fa-file-export"></i>Generate project files
                 </button>
             </section>
             <section>
@@ -107,6 +120,7 @@ const CodePreviewer = (props) => {
             <h2>Code Preview</h2>
             <SyntaxHighlighter str={componentCode} />
         </div>
+        <CodeExporter ref={modalRef} />
     </>
 };
 

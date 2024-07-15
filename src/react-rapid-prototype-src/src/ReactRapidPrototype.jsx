@@ -4,7 +4,7 @@ import './styles.scss';
 import { ProviderRRP } from './context/store';
 import ContextRRP from './components/ContextRRP';
 
-const ReduxRapidPrototype = (props) => (
+const ReactRapidPrototype = (props) => (
     <ProviderRRP>
         <BrowserRouter>
             <ContextRRP {...props}/>
@@ -12,4 +12,4 @@ const ReduxRapidPrototype = (props) => (
     </ProviderRRP>
 );
 
-export default ReduxRapidPrototype;
+export default ReactRapidPrototype;

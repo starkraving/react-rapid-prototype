@@ -40,18 +40,19 @@ const applyHighlighting = (str, row, iter = 0) => {
         found = [...str.matchAll(rule.match)];
         if (found && found.length > 0) {
             content = [];
-            found.forEach((subMatch, idx) => {
+            for (let f = 0 ; f < found.length ; f++) {
+                let subMatch = found[f];
                 if (subMatch.groups) {
                     for (const key in subMatch.groups) {
                         const value = subMatch.groups[key];
                         content.push(
                             value.length > 0 && rule.colors[key].length > 0
-                                ? <span key={`${key}_${row}_${iter}_${r}_${idx}`} style={{color: rule.colors[key]}}>{value}</span>
+                                ? <span key={`${key}_${row}_${iter}_${r}_${f}`} style={{color: rule.colors[key]}}>{value}</span>
                                 : (value.length > 0 ? applyHighlighting(value, row, (iter+1)) : value)
                         )
                     }
                 }
-            });
+            }
             
             break;
         }

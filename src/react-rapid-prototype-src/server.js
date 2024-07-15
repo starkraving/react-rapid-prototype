@@ -7,7 +7,9 @@ var express = require('express'),
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: /http:\/\/localhost:/, // Allow all localhost ports
+  }));
 
 // dynamically include routes (Controller)
 fs.readdirSync(__dirname + '/server/controllers').forEach(function (file) {
