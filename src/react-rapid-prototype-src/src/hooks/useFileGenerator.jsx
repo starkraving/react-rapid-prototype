@@ -11,7 +11,7 @@ const useFileGenerator = () => {
                         ...branch,
                         files: branch.files.map((file) => ({
                             ...file,
-                            selected: file.exists
+                            selected: !file.exists
                         }))
                     })));
                 })
