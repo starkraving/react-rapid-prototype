@@ -129,7 +129,7 @@ dialog#export {
                             }
                         }
 
-                        input[checked] + span::after {
+                        input:checked + span::after {
                             content: "\f205";
                         }
 
